@@ -1,2 +1,2 @@
-include Lya_zelda/DATA/List_of_DATA_files
-include Lya_zelda/DATA/nn_*1.sav
+include Lya_zelda_II/DATA/List_of_DATA_files
+include Lya_zelda_II/DATA/nn_*1.sav

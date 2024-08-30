@@ -7,8 +7,8 @@ with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="Lya_zelda",
-    version="0.0.05",
+    name="Lya_zelda_II",
+    version="0.0.01",
     author="Siddhartha Gurung Lopez",
     author_email="gurung.lopez@gmail.com",
     description="Fast Lyman alpha Radiative Transfer for everyone!",
