@@ -5679,11 +5679,12 @@ def compute_Correction_FACTOR_uncertainty_INDIVIDUAL( PNR , FWHM , Q_value , DAT
 #====================================================================#
 def Correction_factor_uncertainties( PNR_Arr , FWHM_Arr , Confidence_level , Property_name , NN_name ):
 
-    if NN_name == 'IGM+z' : folder = '/ZALL_PCA_CHRIS/'
-    if NN_name == 'IGM-z' : folder = '/NO_z_ZALL/'
-    if NN_name == 'NoIGM' : folder = '/IGM_FREE/'
+    #if NN_name == 'IGM+z' : folder = '/ZALL_PCA_CHRIS/'
+    #if NN_name == 'IGM-z' : folder = '/NO_z_ZALL/'
+    #if NN_name == 'NoIGM' : folder = '/IGM_FREE/'
 
-    dir_with_data = '/Users/sidgurung/Desktop/LINK/'+ folder +'/ACCURACY_ITERATIONS_CNN/'
+    #dir_with_data = '/Users/sidgurung/Desktop/LINK/'+ folder +'/ACCURACY_ITERATIONS_CNN/'
+    dir_with_data = Pipieline_Zelda_2_get_dir_machines( NN_name )
 
     file_name = 'data_Uncertainty_corrections_FACTOR_COMPUTATION_'+ Property_name +'.npy'
 
@@ -5704,9 +5705,15 @@ def Correction_factor_uncertainties( PNR_Arr , FWHM_Arr , Confidence_level , Pro
 #====================================================================#
 def Pipieline_Zelda_2_get_dir_machines( MODE ):
 
-    if MODE == 'IGM+z': pac_dir = '/Users/sidgurung/Desktop/LINK/ZALL_PCA_CHRIS/MACHINES/'
-    if MODE == 'IGM-z': pac_dir = '/Users/sidgurung/Desktop/LINK/NO_z_ZALL/MACHINES/'
-    if MODE == 'NoIGM': pac_dir = '/Users/sidgurung/Desktop/LINK/IGM_FREE/MACHINES/'
+    this_dir, this_filename = os.path.split(__file__)
+
+    #arxiv_with_file_names = this_dir + '/DATA/List_of_DATA_files'
+
+    #if MODE == 'IGM+z': pac_dir = '/Users/sidgurung/Desktop/LINK/ZALL_PCA_CHRIS/MACHINES/'
+    #if MODE == 'IGM-z': pac_dir = '/Users/sidgurung/Desktop/LINK/NO_z_ZALL/MACHINES/'
+    #if MODE == 'NoIGM': pac_dir = '/Users/sidgurung/Desktop/LINK/IGM_FREE/MACHINES/'
+
+    pac_dir = this_dir + '/DATA/MODELS_ZELDA_II/MODELS_' + MODE + '/'
 
     return pac_dir
 #====================================================================#
