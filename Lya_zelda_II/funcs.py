@@ -2132,55 +2132,6 @@ def plot_a_rebinned_line( new_wave_Arr , binned_line , Bin ):
 #====================================================================#
 #====================================================================#
 #====================================================================#
-#def Add_noise_to_line( wave_Arr_line , Line_Prob_Arr , SN , same_norm=False ):
-#    '''
-#        This functions adds noise to a line profile.
-#
-#        **Input**
-#
-#        wave_Arr_line : 1-D sequence of float
-#                   Array with the Wavelength where the spectrum is evaluated.
-#                   Same units as Bin. This has to be sorted.
-#
-#        Line_Prob_Arr : 1-D sequence of float
-#                   Arrays with the flux of the spectrum.
-#
-#        SN : float
-#                   Signal to noise of the desire line.
-#
-#        same_norm : optional bool.
-#                    If true return a line with the same normalization as the input
-#
-#        **Output**
-#
-#         Noisy_Line_Arr : 1-D sequence of float
-#                   Spectrum with the noise
-#
-#        Noise_Arr : 1-D sequence of float
-#                   Particular flux density of the noise applyed
-#    '''
-#    mask = Line_Prob_Arr > 0.05 * np.amax( Line_Prob_Arr )
-#
-#    SS = np.mean( Line_Prob_Arr[ mask ] )
-#
-#    Noise_level = SS * 1. / SN 
-#
-#    Noise_Arr = np.random.randn( len(Line_Prob_Arr) ) * Noise_level 
-#
-#    Noisy_Line_Arr = Line_Prob_Arr + Noise_Arr
-#
-#    if same_norm :
-#
-#        I_init = np.trapz( Line_Prob_Arr , wave_Arr_line )
-#
-#        I_noise = np.trapz( Noisy_Line_Arr , wave_Arr_line )
-#
-#        Noisy_Line_Arr = Noisy_Line_Arr * I_init * 1. / I_noise 
-#
-#    return Noisy_Line_Arr , Noise_Arr
-#====================================================================#
-#====================================================================#
-#====================================================================#
 def gaus( x_Arr , A , mu , sigma ):
     '''
         Retruns a gaussian evaluated in x_Arr.
@@ -2710,141 +2661,141 @@ def Treat_A_Line_To_NN_Input( w_Arr , f_Arr , PIX , FWHM , Delta_min=-18.5 , Del
 #====================================================================#
 #====================================================================#
 #====================================================================#
-def Treat_A_Line_To_NN_Input_II( w_Arr , f_Arr , PIX , FWHM , Delta_min=-10.0 , Delta_max=10.0 , Nbins_tot=500 , Denser_Center=True , normed=False, scaled=True ):
-    '''
-        Convert a line profile and the usefull information into the INPUT of the NN.
-
-        **Input**
-
-        w_Arr : 1-D sequence of floats
-              Wavelgnth of the line profile in the observed frame. [A]
-
-        f_Arr : 1-D sequence of floats
-              Flux density of the observed line profile in arbitrary units.
-
-        FWHM : float
-              Full width half maximum [A] of the experiment.
-
-        PIX : float
-              Pixel size in wavelgnth [A] of the experiment.
-
-        Delta_min : optional float
-              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
-
-              Default = -18.5
-
-        Delta_min : optional float
-              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
-
-              Default = +18.5
-
-        Nbins_tot : optional int
-              Total number of wvelgnths bins.
-
-              Default = 1000
-
-        Denser_Center : optional bool
-              Populates denser the regions close to Lyman-alpha
-
-              Default = True
-
-        normed : optional bool
-              If True, nomalizes the line profile.
-
-        scaled : optinal bool
-              If True, divides the line profile by its maximum.
-
-        **Output**
-
-        rest_w_Arr : 1-D sequence of float
-              Wavelgnth array where the line is evaluated in the rest frame.
-
-        NN_line : 1-D sequence of float
-              Line profile evaluated in rest_w_Arr after normalization or scaling.
-
-        z_max_i : float
-              Redshift of the source if the global maximum of the spectrum is the
-              Lyman-alpha wavelegth.
-
-        INPUT: 1-D secuence of float
-              The actuall input to use in the Neural networks.
-    '''
-    ######## Part 1 : Line profile
-    rest_w_Arr = Define_wavelength_for_NN( Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center )
-
-    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i = NN_convert_Obs_Line_to_proxy_rest_line( w_Arr, f_Arr, normed=normed , scaled=scaled)
-
-    NN_line = np.interp( rest_w_Arr , w_r_i_Arr , f_r_i_Arr , left=f_r_i_Arr[0] , right=f_r_i_Arr[-1] )
-
-    NN_line = NN_line * 1. / np.amax( NN_line )
-
-    ######## Part 2 : Convolutions
-    Dl_1 = 0.2
-    Dl_2 = 1.0
-
-    w_lya = 1215.67
-
-    Dl_min_conv = -4.5
-    Dl_max_conv =  3.5
-
-    w_pix_1_Arr = np.arange( Dl_min_conv + w_lya , Dl_max_conv + w_lya , Dl_1 )
-    w_pix_2_Arr = np.arange( Dl_min_conv + w_lya , Dl_max_conv + w_lya , Dl_2 )
-
-    f_pix_1_Arr = bin_one_line( rest_w_Arr , NN_line , w_pix_1_Arr , Dl_1 , same_norm=False )
-    f_pix_2_Arr = bin_one_line( rest_w_Arr , NN_line , w_pix_2_Arr , Dl_2 , same_norm=False )
-
-    f_pix_1_Arr = f_pix_1_Arr * 1. / np.amax( f_pix_1_Arr ) 
-    f_pix_2_Arr = f_pix_2_Arr * 1. / np.amax( f_pix_2_Arr ) 
-
-    N_bins_1 = len( f_pix_1_Arr )
-    N_bins_2 = len( f_pix_2_Arr )
-
-    conv_1_mat = np.matmul( f_pix_1_Arr.reshape( N_bins_1 , 1 ) , f_pix_1_Arr.reshape( 1 , N_bins_1 ) ) 
-    conv_2_mat = np.matmul( f_pix_2_Arr.reshape( N_bins_2 , 1 ) , f_pix_2_Arr.reshape( 1 , N_bins_2 ) ) 
-
-    conv_1_Arr = conv_1_mat.reshape( N_bins_1 * N_bins_1 )
-    conv_2_Arr = conv_2_mat.reshape( N_bins_2 * N_bins_2 )
-
-    index_i_Mat = np.matmul( np.arange( N_bins_1 ).reshape( N_bins_1 , 1 ) , np.ones( N_bins_1 ).reshape( 1 , N_bins_1 ) )
-
-    index_j_Mat = index_i_Mat.T
-
-    diff_Mat = index_i_Mat - index_j_Mat
-
-    N_bins_from_diag = 10
-    mask_conv1_Diag  = np.absolute( diff_Mat ) < N_bins_from_diag
-
-    mask_conv1_upper = index_i_Mat >= index_j_Mat
-
-    mask_conv1 = mask_conv1_Diag * mask_conv1_upper
-
-    conv_1_Arr = conv_1_Arr[ mask_conv1.reshape( N_bins_1 * N_bins_1 ) ]
-
-    #############
-
-    conv_info = {}
-
-    conv_info[ 'w_pix_1' ] = w_pix_1_Arr
-    conv_info[ 'w_pix_2' ] = w_pix_2_Arr
-    conv_info[ 'f_pix_1' ] = f_pix_1_Arr
-    conv_info[ 'f_pix_2' ] = f_pix_2_Arr
-
-    conv_info['conv_1_mat'] = conv_1_mat
-    conv_info['conv_2_mat'] = conv_2_mat
-
-    conv_info['mask_conv1_upper'] = mask_conv1_upper
-    conv_info['mask_conv1_Diag' ] = mask_conv1_Diag
-
-    conv_info['conv_1_Arr'] = conv_1_Arr
-    conv_info['conv_2_Arr'] = conv_2_Arr
-    
-    ######## Part 3 : Feature ingeniering
-
-    ######## Part 4 : stacking 
-    INPUT =  np.array( [ np.hstack( ( NN_line , z_max_i , np.log10( FWHM ) , np.log10( PIX ) , conv_1_Arr , conv_2_Arr ) ) ] )
-
-    #return rest_w_Arr , NN_line , z_max_i , w_pix_1_Arr , w_pix_2_Arr , f_pix_1_Arr , f_pix_2_Arr , conv_1_Arr , conv_2_Arr , INPUT
-    return rest_w_Arr , NN_line , z_max_i , INPUT , conv_info
+#def Treat_A_Line_To_NN_Input_II( w_Arr , f_Arr , PIX , FWHM , Delta_min=-10.0 , Delta_max=10.0 , Nbins_tot=500 , Denser_Center=True , normed=False, scaled=True ):
+#    '''
+#        Convert a line profile and the usefull information into the INPUT of the NN.
+#
+#        **Input**
+#
+#        w_Arr : 1-D sequence of floats
+#              Wavelgnth of the line profile in the observed frame. [A]
+#
+#        f_Arr : 1-D sequence of floats
+#              Flux density of the observed line profile in arbitrary units.
+#
+#        FWHM : float
+#              Full width half maximum [A] of the experiment.
+#
+#        PIX : float
+#              Pixel size in wavelgnth [A] of the experiment.
+#
+#        Delta_min : optional float
+#              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+#
+#              Default = -18.5
+#
+#        Delta_min : optional float
+#              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+#
+#              Default = +18.5
+#
+#        Nbins_tot : optional int
+#              Total number of wvelgnths bins.
+#
+#              Default = 1000
+#
+#        Denser_Center : optional bool
+#              Populates denser the regions close to Lyman-alpha
+#
+#              Default = True
+#
+#        normed : optional bool
+#              If True, nomalizes the line profile.
+#
+#        scaled : optinal bool
+#              If True, divides the line profile by its maximum.
+#
+#        **Output**
+#
+#        rest_w_Arr : 1-D sequence of float
+#              Wavelgnth array where the line is evaluated in the rest frame.
+#
+#        NN_line : 1-D sequence of float
+#              Line profile evaluated in rest_w_Arr after normalization or scaling.
+#
+#        z_max_i : float
+#              Redshift of the source if the global maximum of the spectrum is the
+#              Lyman-alpha wavelegth.
+#
+#        INPUT: 1-D secuence of float
+#              The actuall input to use in the Neural networks.
+#    '''
+#    ######## Part 1 : Line profile
+#    rest_w_Arr = Define_wavelength_for_NN( Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center )
+#
+#    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i = NN_convert_Obs_Line_to_proxy_rest_line( w_Arr, f_Arr, normed=normed , scaled=scaled)
+#
+#    NN_line = np.interp( rest_w_Arr , w_r_i_Arr , f_r_i_Arr , left=f_r_i_Arr[0] , right=f_r_i_Arr[-1] )
+#
+#    NN_line = NN_line * 1. / np.amax( NN_line )
+#
+#    ######## Part 2 : Convolutions
+#    Dl_1 = 0.2
+#    Dl_2 = 1.0
+#
+#    w_lya = 1215.67
+#
+#    Dl_min_conv = -4.5
+#    Dl_max_conv =  3.5
+#
+#    w_pix_1_Arr = np.arange( Dl_min_conv + w_lya , Dl_max_conv + w_lya , Dl_1 )
+#    w_pix_2_Arr = np.arange( Dl_min_conv + w_lya , Dl_max_conv + w_lya , Dl_2 )
+#
+#    f_pix_1_Arr = bin_one_line( rest_w_Arr , NN_line , w_pix_1_Arr , Dl_1 , same_norm=False )
+#    f_pix_2_Arr = bin_one_line( rest_w_Arr , NN_line , w_pix_2_Arr , Dl_2 , same_norm=False )
+#
+#    f_pix_1_Arr = f_pix_1_Arr * 1. / np.amax( f_pix_1_Arr ) 
+#    f_pix_2_Arr = f_pix_2_Arr * 1. / np.amax( f_pix_2_Arr ) 
+#
+#    N_bins_1 = len( f_pix_1_Arr )
+#    N_bins_2 = len( f_pix_2_Arr )
+#
+#    conv_1_mat = np.matmul( f_pix_1_Arr.reshape( N_bins_1 , 1 ) , f_pix_1_Arr.reshape( 1 , N_bins_1 ) ) 
+#    conv_2_mat = np.matmul( f_pix_2_Arr.reshape( N_bins_2 , 1 ) , f_pix_2_Arr.reshape( 1 , N_bins_2 ) ) 
+#
+#    conv_1_Arr = conv_1_mat.reshape( N_bins_1 * N_bins_1 )
+#    conv_2_Arr = conv_2_mat.reshape( N_bins_2 * N_bins_2 )
+#
+#    index_i_Mat = np.matmul( np.arange( N_bins_1 ).reshape( N_bins_1 , 1 ) , np.ones( N_bins_1 ).reshape( 1 , N_bins_1 ) )
+#
+#    index_j_Mat = index_i_Mat.T
+#
+#    diff_Mat = index_i_Mat - index_j_Mat
+#
+#    N_bins_from_diag = 10
+#    mask_conv1_Diag  = np.absolute( diff_Mat ) < N_bins_from_diag
+#
+#    mask_conv1_upper = index_i_Mat >= index_j_Mat
+#
+#    mask_conv1 = mask_conv1_Diag * mask_conv1_upper
+#
+#    conv_1_Arr = conv_1_Arr[ mask_conv1.reshape( N_bins_1 * N_bins_1 ) ]
+#
+#    #############
+#
+#    conv_info = {}
+#
+#    conv_info[ 'w_pix_1' ] = w_pix_1_Arr
+#    conv_info[ 'w_pix_2' ] = w_pix_2_Arr
+#    conv_info[ 'f_pix_1' ] = f_pix_1_Arr
+#    conv_info[ 'f_pix_2' ] = f_pix_2_Arr
+#
+#    conv_info['conv_1_mat'] = conv_1_mat
+#    conv_info['conv_2_mat'] = conv_2_mat
+#
+#    conv_info['mask_conv1_upper'] = mask_conv1_upper
+#    conv_info['mask_conv1_Diag' ] = mask_conv1_Diag
+#
+#    conv_info['conv_1_Arr'] = conv_1_Arr
+#    conv_info['conv_2_Arr'] = conv_2_Arr
+#    
+#    ######## Part 3 : Feature ingeniering
+#
+#    ######## Part 4 : stacking 
+#    INPUT =  np.array( [ np.hstack( ( NN_line , z_max_i , np.log10( FWHM ) , np.log10( PIX ) , conv_1_Arr , conv_2_Arr ) ) ] )
+#
+#    #return rest_w_Arr , NN_line , z_max_i , w_pix_1_Arr , w_pix_2_Arr , f_pix_1_Arr , f_pix_2_Arr , conv_1_Arr , conv_2_Arr , INPUT
+#    return rest_w_Arr , NN_line , z_max_i , INPUT , conv_info
 #====================================================================#
 #====================================================================#
 #====================================================================#
@@ -2867,217 +2818,278 @@ def Down_sample_Array_mean( y_Arr , N_Pix_to_combine ):
 #====================================================================#
 #====================================================================#
 #====================================================================#
-def Treat_A_Line_To_NN_Input_SMOOTH( w_Arr , f_Arr , PIX , FWHM , Delta_min=-10.5 , Delta_max=18.5 , Nbins_tot=1000 , Denser_Center=True , normed=False, scaled=True ):
-    '''
-        Convert a line profile and the usefull information into the INPUT of the NN.
-
-        **Input**
-
-        w_Arr : 1-D sequence of floats
-              Wavelgnth of the line profile in the observed frame. [A]
-
-        f_Arr : 1-D sequence of floats
-              Flux density of the observed line profile in arbitrary units.
-
-        FWHM : float
-              Full width half maximum [A] of the experiment.
-
-        PIX : float
-              Pixel size in wavelgnth [A] of the experiment.
-
-
-        Delta_min : optional float
-              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
-
-              Default = -18.5
-
-        Delta_min : optional float
-              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
-
-              Default = +18.5
-
-        Nbins_tot : optional int
-              Total number of wvelgnths bins.
-
-              Default = 1000
-
-        Denser_Center : optional bool
-              Populates denser the regions close to Lyman-alpha
-
-              Default = True
-
-        normed : optional bool
-              If True, nomalizes the line profile.
-
-        scaled : optinal bool
-              If True, divides the line profile by its maximum.
-
-        **Output**
-
-        rest_w_Arr : 1-D sequence of float
-              Wavelgnth array where the line is evaluated in the rest frame.
-
-        NN_line : 1-D sequence of float
-              Line profile evaluated in rest_w_Arr after normalization or scaling.
-
-        z_max_i : float
-              Redshift of the source if the global maximum of the spectrum is the
-              Lyman-alpha wavelegth.
-
-        INPUT: 1-D secuence of float
-              The actuall input to use in the Neural networks.
-    '''
-    rest_w_Arr = Define_wavelength_for_NN( Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center )
-
-    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i = NN_convert_Obs_Line_to_proxy_rest_line( w_Arr, f_Arr, normed=normed , scaled=scaled)
-
-    NN_line = np.interp( rest_w_Arr , w_r_i_Arr , f_r_i_Arr , left=f_r_i_Arr[0] , right=f_r_i_Arr[-1] )
-
-    NN_line = NN_line * 1. / np.amax( NN_line )
-
-    SMOOTH_line = gaussian_filter1d( NN_line , 10 )
-
-    #PIX_f = 0.1
-    #wave_pix_Arr = np.arange( ,  , PIX_f )
-
-    #new_pixled_Arr = bin_one_line( w_r_i_Arr , SMOOTH_line , wave_pix_Arr , PIX_f )
-
-
-    N_Pix_to_combine = 5
-    new_pixled_f_Arr = Down_sample_Array_mean( SMOOTH_line , N_Pix_to_combine )
-    new_pixled_w_Arr = Down_sample_Array_mean( rest_w_Arr  , N_Pix_to_combine )
-    #mask_pixel = ( wave_pix_Arr > 1215.67-4 )
-
-    #print('len( new_pixled_Arr) = ' , new_pixled_f_Arr )
-
-    #print( 'len( mask_pixel ) = ' , len(mask_pixel) )
-    #print( 'len( wave_pix_Arr ) = ' , len( wave_pix_Arr ) )
-    #print( 'len( new_pixled_Arr ) = ' , len( new_pixled_Arr ) )
-
-    #wave_pix_Arr   = wave_pix_Arr[   mask_pixel ]
-    #new_pixled_Arr = new_pixled_Arr[ mask_pixel ]
-
-    INPUT =  np.array( [ np.hstack( ( NN_line , z_max_i , np.log10( FWHM )  , np.log10( PIX )  , new_pixled_f_Arr ) ) ] )
-
-    dic={}
-    dic['w_r_i_Arr'       ] = w_r_i_Arr
-    dic['Delta_r_i_Arr'   ] = Delta_r_i_Arr
-    dic['f_r_i_Arr'       ] = f_r_i_Arr
-    dic['z_max_i'         ] = z_max_i
-    dic['SMOOTH_line'     ] = SMOOTH_line
-    dic['new_pixled_f_Arr'] = new_pixled_f_Arr
-    dic['new_pixled_w_Arr'] = new_pixled_w_Arr
-    dic['NN_line_f'       ] = NN_line
-    dic['NN_line_w'       ] = rest_w_Arr
-
-    return rest_w_Arr , NN_line , z_max_i , INPUT , dic
+#def Treat_A_Line_To_NN_Input_SMOOTH( w_Arr , f_Arr , PIX , FWHM , Delta_min=-10.5 , Delta_max=18.5 , Nbins_tot=1000 , Denser_Center=True , normed=False, scaled=True ):
+#    '''
+#        Convert a line profile and the usefull information into the INPUT of the NN.
+#
+#        **Input**
+#
+#        w_Arr : 1-D sequence of floats
+#              Wavelgnth of the line profile in the observed frame. [A]
+#
+#        f_Arr : 1-D sequence of floats
+#              Flux density of the observed line profile in arbitrary units.
+#
+#        FWHM : float
+#              Full width half maximum [A] of the experiment.
+#
+#        PIX : float
+#              Pixel size in wavelgnth [A] of the experiment.
+#
+#
+#        Delta_min : optional float
+#              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+#
+#              Default = -18.5
+#
+#        Delta_min : optional float
+#              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+#
+#              Default = +18.5
+#
+#        Nbins_tot : optional int
+#              Total number of wvelgnths bins.
+#
+#              Default = 1000
+#
+#        Denser_Center : optional bool
+#              Populates denser the regions close to Lyman-alpha
+#
+#              Default = True
+#
+#        normed : optional bool
+#              If True, nomalizes the line profile.
+#
+#        scaled : optinal bool
+#              If True, divides the line profile by its maximum.
+#
+#        **Output**
+#
+#        rest_w_Arr : 1-D sequence of float
+#              Wavelgnth array where the line is evaluated in the rest frame.
+#
+#        NN_line : 1-D sequence of float
+#              Line profile evaluated in rest_w_Arr after normalization or scaling.
+#
+#        z_max_i : float
+#              Redshift of the source if the global maximum of the spectrum is the
+#              Lyman-alpha wavelegth.
+#
+#        INPUT: 1-D secuence of float
+#              The actuall input to use in the Neural networks.
+#    '''
+#    rest_w_Arr = Define_wavelength_for_NN( Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center )
+#
+#    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i = NN_convert_Obs_Line_to_proxy_rest_line( w_Arr, f_Arr, normed=normed , scaled=scaled)
+#
+#    NN_line = np.interp( rest_w_Arr , w_r_i_Arr , f_r_i_Arr , left=f_r_i_Arr[0] , right=f_r_i_Arr[-1] )
+#
+#    NN_line = NN_line * 1. / np.amax( NN_line )
+#
+#    SMOOTH_line = gaussian_filter1d( NN_line , 10 )
+#
+#    #PIX_f = 0.1
+#    #wave_pix_Arr = np.arange( ,  , PIX_f )
+#
+#    #new_pixled_Arr = bin_one_line( w_r_i_Arr , SMOOTH_line , wave_pix_Arr , PIX_f )
+#
+#
+#    N_Pix_to_combine = 5
+#    new_pixled_f_Arr = Down_sample_Array_mean( SMOOTH_line , N_Pix_to_combine )
+#    new_pixled_w_Arr = Down_sample_Array_mean( rest_w_Arr  , N_Pix_to_combine )
+#    #mask_pixel = ( wave_pix_Arr > 1215.67-4 )
+#
+#    #print('len( new_pixled_Arr) = ' , new_pixled_f_Arr )
+#
+#    #print( 'len( mask_pixel ) = ' , len(mask_pixel) )
+#    #print( 'len( wave_pix_Arr ) = ' , len( wave_pix_Arr ) )
+#    #print( 'len( new_pixled_Arr ) = ' , len( new_pixled_Arr ) )
+#
+#    #wave_pix_Arr   = wave_pix_Arr[   mask_pixel ]
+#    #new_pixled_Arr = new_pixled_Arr[ mask_pixel ]
+#
+#    INPUT =  np.array( [ np.hstack( ( NN_line , z_max_i , np.log10( FWHM )  , np.log10( PIX )  , new_pixled_f_Arr ) ) ] )
+#
+#    dic={}
+#    dic['w_r_i_Arr'       ] = w_r_i_Arr
+#    dic['Delta_r_i_Arr'   ] = Delta_r_i_Arr
+#    dic['f_r_i_Arr'       ] = f_r_i_Arr
+#    dic['z_max_i'         ] = z_max_i
+#    dic['SMOOTH_line'     ] = SMOOTH_line
+#    dic['new_pixled_f_Arr'] = new_pixled_f_Arr
+#    dic['new_pixled_w_Arr'] = new_pixled_w_Arr
+#    dic['NN_line_f'       ] = NN_line
+#    dic['NN_line_w'       ] = rest_w_Arr
+#
+#    return rest_w_Arr , NN_line , z_max_i , INPUT , dic
 #====================================================================#
 #====================================================================#
 #====================================================================#
-def Treat_A_Line_To_NN_Input_CONVOLUTION_SMOOTH( w_Arr , f_Arr , PIX , FWHM , Delta_min=-10.5 , Delta_max=18.5 , Nbins_tot=1000 , Denser_Center=True , normed=False, scaled=True ):
-    '''
-        Convert a line profile and the usefull information into the INPUT of the NN.
-
-        **Input**
-
-        w_Arr : 1-D sequence of floats
-              Wavelgnth of the line profile in the observed frame. [A]
-
-        f_Arr : 1-D sequence of floats
-              Flux density of the observed line profile in arbitrary units.
-
-        FWHM : float
-              Full width half maximum [A] of the experiment.
-
-        PIX : float
-              Pixel size in wavelgnth [A] of the experiment.
-
-
-        Delta_min : optional float
-              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
-
-              Default = -18.5
-
-        Delta_min : optional float
-              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
-
-              Default = +18.5
-
-        Nbins_tot : optional int
-              Total number of wvelgnths bins.
-
-              Default = 1000
-
-        Denser_Center : optional bool
-              Populates denser the regions close to Lyman-alpha
-
-              Default = True
-
-        normed : optional bool
-              If True, nomalizes the line profile.
-
-        scaled : optinal bool
-              If True, divides the line profile by its maximum.
-
-        **Output**
-
-        rest_w_Arr : 1-D sequence of float
-              Wavelgnth array where the line is evaluated in the rest frame.
-
-        NN_line : 1-D sequence of float
-              Line profile evaluated in rest_w_Arr after normalization or scaling.
-
-        z_max_i : float
-              Redshift of the source if the global maximum of the spectrum is the
-              Lyman-alpha wavelegth.
-
-        INPUT: 1-D secuence of float
-              The actuall input to use in the Neural networks.
-    '''
-    rest_w_Arr = Define_wavelength_for_NN( Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center )
-
-    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i = NN_convert_Obs_Line_to_proxy_rest_line_SMOOTH( w_Arr, f_Arr, normed=normed , scaled=scaled)
-
-    NN_line = np.interp( rest_w_Arr , w_r_i_Arr , f_r_i_Arr , left=f_r_i_Arr[0] , right=f_r_i_Arr[-1] )
-
-    NN_line = NN_line * 1. / np.amax( NN_line )
-
-    ##
-    SMOOTH_line = gaussian_filter1d( NN_line , 10 )
-
-    N_Pix_to_combine = 5
-    new_pixled_f_Arr = Down_sample_Array_mean( SMOOTH_line , N_Pix_to_combine )
-    new_pixled_w_Arr = Down_sample_Array_mean( rest_w_Arr  , N_Pix_to_combine )
-
-    ##
-    CONV_SMOOTH_line = gaussian_filter1d( NN_line , 40 )
-
-    N_Pix_to_combine = 20
-    CONV_new_pixled_f_Arr = Down_sample_Array_mean( CONV_SMOOTH_line , N_Pix_to_combine )
-    CONV_new_pixled_w_Arr = Down_sample_Array_mean( rest_w_Arr  , N_Pix_to_combine )
-    ##
-
-    INPUT =  np.array( [ np.hstack( ( NN_line , z_max_i , np.log10( FWHM )  , np.log10( PIX )  , new_pixled_f_Arr , CONV_new_pixled_f_Arr ) ) ] )
-
-    dic={}
-    dic['w_r_i_Arr'       ] = w_r_i_Arr
-    dic['Delta_r_i_Arr'   ] = Delta_r_i_Arr
-    dic['f_r_i_Arr'       ] = f_r_i_Arr
-    dic['z_max_i'         ] = z_max_i
-    dic['SMOOTH_line'     ] = SMOOTH_line
-    dic['new_pixled_f_Arr'] = new_pixled_f_Arr
-    dic['new_pixled_w_Arr'] = new_pixled_w_Arr
-    dic['CONV_SMOOTH_line'] = CONV_SMOOTH_line
-    dic['CONV_new_pixled_f_Arr'] = CONV_new_pixled_f_Arr
-    dic['CONV_new_pixled_w_Arr'] = CONV_new_pixled_w_Arr
-    dic['NN_line_f'       ] = NN_line
-    dic['NN_line_w'       ] = rest_w_Arr
-
-    return rest_w_Arr , NN_line , z_max_i , INPUT , dic
+#def Treat_A_Line_To_NN_Input_CONVOLUTION_SMOOTH( w_Arr , f_Arr , PIX , FWHM , Delta_min=-10.5 , Delta_max=18.5 , Nbins_tot=1000 , Denser_Center=True , normed=False, scaled=True ):
+#    '''
+#        Convert a line profile and the usefull information into the INPUT of the NN.
+#
+#        **Input**
+#
+#        w_Arr : 1-D sequence of floats
+#              Wavelgnth of the line profile in the observed frame. [A]
+#
+#        f_Arr : 1-D sequence of floats
+#              Flux density of the observed line profile in arbitrary units.
+#
+#        FWHM : float
+#              Full width half maximum [A] of the experiment.
+#
+#        PIX : float
+#              Pixel size in wavelgnth [A] of the experiment.
+#
+#
+#        Delta_min : optional float
+#              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+#
+#              Default = -18.5
+#
+#        Delta_min : optional float
+#              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+#
+#              Default = +18.5
+#
+#        Nbins_tot : optional int
+#              Total number of wvelgnths bins.
+#
+#              Default = 1000
+#
+#        Denser_Center : optional bool
+#              Populates denser the regions close to Lyman-alpha
+#
+#              Default = True
+#
+#        normed : optional bool
+#              If True, nomalizes the line profile.
+#
+#        scaled : optinal bool
+#              If True, divides the line profile by its maximum.
+#
+#        **Output**
+#
+#        rest_w_Arr : 1-D sequence of float
+#              Wavelgnth array where the line is evaluated in the rest frame.
+#
+#        NN_line : 1-D sequence of float
+#              Line profile evaluated in rest_w_Arr after normalization or scaling.
+#
+#        z_max_i : float
+#              Redshift of the source if the global maximum of the spectrum is the
+#              Lyman-alpha wavelegth.
+#
+#        INPUT: 1-D secuence of float
+#              The actuall input to use in the Neural networks.
+#    '''
+#    rest_w_Arr = Define_wavelength_for_NN( Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center )
+#
+#    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i = NN_convert_Obs_Line_to_proxy_rest_line_SMOOTH( w_Arr, f_Arr, normed=normed , scaled=scaled)
+#
+#    NN_line = np.interp( rest_w_Arr , w_r_i_Arr , f_r_i_Arr , left=f_r_i_Arr[0] , right=f_r_i_Arr[-1] )
+#
+#    NN_line = NN_line * 1. / np.amax( NN_line )
+#
+#    ##
+#    SMOOTH_line = gaussian_filter1d( NN_line , 10 )
+#
+#    N_Pix_to_combine = 5
+#    new_pixled_f_Arr = Down_sample_Array_mean( SMOOTH_line , N_Pix_to_combine )
+#    new_pixled_w_Arr = Down_sample_Array_mean( rest_w_Arr  , N_Pix_to_combine )
+#
+#    ##
+#    CONV_SMOOTH_line = gaussian_filter1d( NN_line , 40 )
+#
+#    N_Pix_to_combine = 20
+#    CONV_new_pixled_f_Arr = Down_sample_Array_mean( CONV_SMOOTH_line , N_Pix_to_combine )
+#    CONV_new_pixled_w_Arr = Down_sample_Array_mean( rest_w_Arr  , N_Pix_to_combine )
+#    ##
+#
+#    INPUT =  np.array( [ np.hstack( ( NN_line , z_max_i , np.log10( FWHM )  , np.log10( PIX )  , new_pixled_f_Arr , CONV_new_pixled_f_Arr ) ) ] )
+#
+#    dic={}
+#    dic['w_r_i_Arr'       ] = w_r_i_Arr
+#    dic['Delta_r_i_Arr'   ] = Delta_r_i_Arr
+#    dic['f_r_i_Arr'       ] = f_r_i_Arr
+#    dic['z_max_i'         ] = z_max_i
+#    dic['SMOOTH_line'     ] = SMOOTH_line
+#    dic['new_pixled_f_Arr'] = new_pixled_f_Arr
+#    dic['new_pixled_w_Arr'] = new_pixled_w_Arr
+#    dic['CONV_SMOOTH_line'] = CONV_SMOOTH_line
+#    dic['CONV_new_pixled_f_Arr'] = CONV_new_pixled_f_Arr
+#    dic['CONV_new_pixled_w_Arr'] = CONV_new_pixled_w_Arr
+#    dic['NN_line_f'       ] = NN_line
+#    dic['NN_line_w'       ] = rest_w_Arr
+#
+#    return rest_w_Arr , NN_line , z_max_i , INPUT , dic
 #====================================================================#
 #====================================================================#
 #====================================================================#
 def Treat_A_Line_To_NN_Input_PCA( w_Arr , f_Arr , PIX , FWHM , PCA_model , Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , normed=False, scaled=True , FORCE_RANDOM_z=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
+
+    '''
+       Convert a line profile and the usefull information into the INPUT of the NN.
+    
+       **Input**
+    
+       w_Arr : 1-D sequence of floats
+             Wavelgnth of the line profile in the observed frame. [A]
+    
+       f_Arr : 1-D sequence of floats
+             Flux density of the observed line profile in arbitrary units.
+    
+       FWHM : float
+             Full width half maximum [A] of the experiment.
+    
+       PIX : float
+             Pixel size in wavelgnth [A] of the experiment.
+
+        PCA_model : Python dictionary:
+                    Contains the PCA model.    
+    
+       Delta_min : optional float
+             Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+             Default = -12.0
+    
+       Delta_min : optional float
+             Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+             Default = +12.0
+    
+       Nbins_tot : optional int
+             Total number of wvelgnths bins.
+             Default = 600
+    
+       Denser_Center : optional bool
+             Populates denser the regions close to Lyman-alpha
+             Default = True
+    
+       normed : optional bool
+             If True, nomalizes the line profile.
+    
+       scaled : optinal bool
+             If True, divides the line profile by its maximum.
+    
+       **Output**
+    
+       rest_w_Arr : 1-D sequence of float
+             Wavelgnth array where the line is evaluated in the rest frame.
+    
+       NN_line : 1-D sequence of float
+             Line profile evaluated in rest_w_Arr after normalization or scaling.
+    
+       z_max_i : float
+             Redshift of the source if the global maximum of the spectrum is the
+             Lyman-alpha wavelegth.
+   
+       pca_features:  1-D sequence of float
+             Contains the PCA features.
+ 
+       INPUT: 1-D secuence of float
+             The actuall input to use in the Neural networks.
+    '''
 
     rest_w_Arr , NN_line , z_max_i , bad_INPUT = Treat_A_Line_To_NN_Input( w_Arr , f_Arr , PIX , FWHM , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled )
 
@@ -3108,20 +3120,74 @@ def Treat_A_Line_To_NN_Input_PCA( w_Arr , f_Arr , PIX , FWHM , PCA_model , Delta
 #====================================================================#
 def Treat_A_Line_To_NN_Input_PCA_NOz( w_Arr , f_Arr , PIX , FWHM , PCA_model , Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , normed=False, scaled=True , FORCE_RANDOM_z=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
 
+
+    '''
+       Convert a line profile and the usefull information into the INPUT of the NN.
+    
+       **Input**
+    
+       w_Arr : 1-D sequence of floats
+             Wavelgnth of the line profile in the observed frame. [A]
+    
+       f_Arr : 1-D sequence of floats
+             Flux density of the observed line profile in arbitrary units.
+    
+       FWHM : float
+             Full width half maximum [A] of the experiment.
+    
+       PIX : float
+             Pixel size in wavelgnth [A] of the experiment.
+    
+        PCA_model : Python dictionary:
+                    Contains the PCA model.
+    
+       Delta_min : optional float
+             Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+             Default = -12.0
+    
+       Delta_min : optional float
+             Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+             Default = +12.0
+    
+       Nbins_tot : optional int
+             Total number of wvelgnths bins.
+             Default = 600
+    
+       Denser_Center : optional bool
+             Populates denser the regions close to Lyman-alpha
+             Default = True
+    
+       normed : optional bool
+             If True, nomalizes the line profile.
+    
+       scaled : optinal bool
+             If True, divides the line profile by its maximum.
+    
+       **Output**
+    
+       rest_w_Arr : 1-D sequence of float
+             Wavelgnth array where the line is evaluated in the rest frame.
+    
+       NN_line : 1-D sequence of float
+             Line profile evaluated in rest_w_Arr after normalization or scaling.
+    
+       z_max_i : float
+             Redshift of the source if the global maximum of the spectrum is the
+             Lyman-alpha wavelegth.
+    
+       pca_features:  1-D sequence of float
+             Contains the PCA features.
+    
+       INPUT: 1-D secuence of float
+             The actuall input to use in the Neural networks.
+    '''
+
     rest_w_Arr , NN_line , z_max_i , bad_INPUT = Treat_A_Line_To_NN_Input( w_Arr , f_Arr , PIX , FWHM , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled )
 
     pca_features = PCA_model.transform( [NN_line] )[0]
 
-    #z_max_to_use = z_max_i
     PIX_to_use   = PIX
     FWHM_to_use  = FWHM
-
-    #if FORCE_RANDOM_z :
-    #    RANDOM_z_i = np.random.rand( ) * 6
-    #    INPUT =  np.array( [ np.hstack( ( pca_features , RANDOM_z_i , np.log10( FWHM )  , np.log10( PIX )  ) ) ] )
-
-    #if not Random_z_in is None:
-    #    z_max_to_use = np.random.rand() * ( Random_z_in[1] - Random_z_in[0] ) + Random_z_in[0]
 
     if not Random_PIX_in is None:
         PIX_to_use = np.random.rand() * ( Random_PIX_in[1] - Random_PIX_in[0] ) + Random_PIX_in[0]
@@ -3174,65 +3240,6 @@ def Treat_A_Line_To_NN_Input_PCA_Iter( w_Arr , f_Arr , PIX , FWHM , PCA_model , 
     INPUT = np.array( [ np.hstack( ( pca_features , z_max_i , np.log10( FWHM ) , np.log10( PIX ) , first_nn_prop_Arr ) ) ] )  
 
     return rest_w_Arr , NN_line , z_max_i , pca_features , INPUT  
-#====================================================================#
-#====================================================================#
-#====================================================================#
-#def Treat_A_Line_To_PCA_SMOOTH_Input( w_Arr , f_Arr , PIX , FWHM , Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , normed=False, scaled=True ):
-#
-#    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i = NN_convert_Obs_Line_to_proxy_rest_line_SMOOTH( w_Arr, f_Arr, normed=normed , scaled=scaled)
-#
-#    rest_w_Arr = Define_wavelength_for_NN( Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center )
-#
-#    NN_line = np.interp( rest_w_Arr , w_r_i_Arr , f_r_i_Arr , left=f_r_i_Arr[0] , right=f_r_i_Arr[-1] )
-#
-#    NN_line = NN_line * 1. / np.amax( NN_line )
-#    
-#    return w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i , rest_w_Arr , NN_line  
-##====================================================================#
-##====================================================================#
-##====================================================================#
-#def Treat_A_Line_To_NN_Input_PCA_Smooth( w_Arr , f_Arr , PIX , FWHM , PCA_model , Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , normed=False, scaled=True ):
-#    
-#    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i , rest_w_Arr , NN_line = Treat_A_Line_To_PCA_SMOOTH_Input( w_Arr , f_Arr , PIX , FWHM , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed, scaled=scaled )
-#
-#    pca_features = PCA_model.transform( [NN_line] )[0] 
-#
-#    ##
-#    SMOOTH_line = gaussian_filter1d( NN_line , 10 )
-#
-#    N_Pix_to_combine = 6
-#    new_pixled_f_Arr = Down_sample_Array_mean( SMOOTH_line , N_Pix_to_combine )
-#    new_pixled_w_Arr = Down_sample_Array_mean( rest_w_Arr  , N_Pix_to_combine )
-#
-#    Npix_to_prune = 10
-#    new_pixled_f_Arr = new_pixled_f_Arr[ Npix_to_prune : len( new_pixled_f_Arr ) - Npix_to_prune ]
-#    new_pixled_w_Arr = new_pixled_f_Arr[ Npix_to_prune : len( new_pixled_w_Arr ) - Npix_to_prune ]
-#    ###
-#    #CONV_SMOOTH_line = gaussian_filter1d( NN_line , 40 )
-#
-#    #N_Pix_to_combine = 20
-#    #CONV_new_pixled_f_Arr = Down_sample_Array_mean( CONV_SMOOTH_line , N_Pix_to_combine )
-#    #CONV_new_pixled_w_Arr = Down_sample_Array_mean( rest_w_Arr  , N_Pix_to_combine )
-#    ###
-#
-#    INPUT =  np.array( [ np.hstack( ( pca_features , new_pixled_f_Arr , z_max_i , np.log10( FWHM )  , np.log10( PIX )  ) ) ] )
-#
-#    dic={}
-#    dic['w_r_i_Arr'       ] = w_r_i_Arr
-#    dic['Delta_r_i_Arr'   ] = Delta_r_i_Arr
-#    dic['f_r_i_Arr'       ] = f_r_i_Arr
-#    dic['z_max_i'         ] = z_max_i
-#    dic['SMOOTH_line'     ] = SMOOTH_line
-#    dic['new_pixled_f_Arr'] = new_pixled_f_Arr
-#    dic['new_pixled_w_Arr'] = new_pixled_w_Arr
-#    #dic['CONV_SMOOTH_line'] = CONV_SMOOTH_line
-#    #dic['CONV_new_pixled_f_Arr'] = CONV_new_pixled_f_Arr
-#    #dic['CONV_new_pixled_w_Arr'] = CONV_new_pixled_w_Arr
-#    dic['NN_line_f'       ] = NN_line
-#    dic['NN_line_w'       ] = rest_w_Arr
-#    dic['pca_features'    ] = pca_features
-#
-#    return rest_w_Arr , NN_line , z_max_i , pca_features , INPUT , dic 
 #====================================================================#
 #====================================================================#
 #====================================================================#
@@ -3336,245 +3343,94 @@ def Generate_a_line_for_training( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, P
 #====================================================================#
 #====================================================================#
 #====================================================================#
-#def Generate_a_line_for_training_II( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, normed=False, scaled=True , Delta_min = -10.0 , Delta_max=10.0 , Denser_Center=True , Nbins_tot=500 ,  T_IGM_Arr=None , w_IGM_Arr=None , RETURN_ALL=False ):
-#
-#    '''
-#        Creates a mock line profile at the desired redshift and returns all the NN
-#        products.
-#
-#        **Input**
-#
-#        z_t : float
-#              Redshift
-#
-#        V_t : float
-#              Outflow expansion velocity [km/s]
-#
-#        log_N_t : float
-#                  logarithmic of the neutral hydrogen column density in cm**-2
-#
-#        t_t : float
-#              Dust optical depth
-#
-#        F_t : float
-#              Total flux of the line. You can pass 1.
-#
-#        log_EW_t : optional, float
-#                   Logarithmic of the rest frame intrisic equivalent width of the line [A]
-#                   Requiered if Geometry == 'Thin_Shell_Cont'
-#
-#        W_t : optional, float
-#               Rest frame intrisic width of the Lyman-alpha line [A]
-#               Requiered if Geometry == 'Thin_Shell_Cont'
-#
-#        PNR_t : float
-#                Signal to noise ratio of the global maximum of the line profile.
-#
-#        FWHM_t : float
-#                 Full width half maximum [A] of the experiment. This dilutes the line profile.
-#
-#        PIX_t : float
-#                Pixel size in wavelgnth [A] of the experiment. This binnes the line profile.
-#
-#        DATA_LyaRT : python dictionary
-#                     Contains the grid information.
-#
-#        Geometry : string
-#                   Outflow geometry to use.
-#
-#        Delta_min : optional float
-#              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
-#
-#              Default = -12.5
-#
-#        Delta_min : optional float
-#              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
-#
-#              Default = +12.5
-#
-#        Nbins_tot : optional int
-#              Total number of wvelgnths bins.
-#
-#              Default = 800
-#
-#        Denser_Center : optional bool
-#              Populates denser the regions close to Lyman-alpha
-#
-#              Default = True
-#
-#        normed : optional bool
-#              If True, nomalizes the line profile.
-#
-#        scaled : optinal bool
-#              If True, divides the line profile by its maximum.
-#
-#        **Output**
-#
-#        rest_w_Arr : 1-D sequence of float
-#              Wavelgnth array where the line is evaluated in the rest frame.
-#
-#        train_line : 1-D sequence of float
-#              Line profile.
-#
-#        z_max_i : float
-#              Redshift of the source if the global maximum of the spectrum is the
-#              Lyman-alpha wavelegth.
-#
-#        INPUT: 1-D secuence of float
-#              The actuall input to use in the Neural networks.
-#    '''
-#
-#    w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry ,  T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
-#
-#    rest_w_Arr , train_line , z_max_i , INPUT , conv_info = Treat_A_Line_To_NN_Input_II( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled )
-#
-#    dic['conv_info'] = conv_info
-#
-#    if RETURN_ALL==False :
-#        return rest_w_Arr , train_line , z_max_i , INPUT
-#    
-#    if RETURN_ALL==True:
-#        return rest_w_Arr , train_line , z_max_i , INPUT , dic
-##====================================================================#
-##====================================================================#
-##====================================================================#
-#def Generate_a_line_for_training_III( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, normed=False, scaled=True , Delta_min = -18.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None , RETURN_ALL=False ):
-#
-#    '''
-#        Creates a mock line profile at the desired redshift and returns all the NN
-#        products.
-#
-#        **Input**
-#
-#        z_t : float
-#              Redshift
-#
-#        V_t : float
-#              Outflow expansion velocity [km/s]
-#
-#        log_N_t : float
-#                  logarithmic of the neutral hydrogen column density in cm**-2
-#
-#        t_t : float
-#              Dust optical depth
-#
-#        F_t : float
-#              Total flux of the line. You can pass 1.
-#
-#        log_EW_t : optional, float
-#                   Logarithmic of the rest frame intrisic equivalent width of the line [A]
-#                   Requiered if Geometry == 'Thin_Shell_Cont'
-#
-#        W_t : optional, float
-#               Rest frame intrisic width of the Lyman-alpha line [A]
-#               Requiered if Geometry == 'Thin_Shell_Cont'
-#
-#        PNR_t : float
-#                Signal to noise ratio of the global maximum of the line profile.
-#
-#        FWHM_t : float
-#                 Full width half maximum [A] of the experiment. This dilutes the line profile.
-#
-#        PIX_t : float
-#                Pixel size in wavelgnth [A] of the experiment. This binnes the line profile.
-#
-#        DATA_LyaRT : python dictionary
-#                     Contains the grid information.
-#
-#        Geometry : string
-#                   Outflow geometry to use.
-#
-#        Delta_min : optional float
-#              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
-#
-#              Default = -18.5
-#
-#        Delta_min : optional float
-#              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
-#
-#              Default = +18.5
-#
-#        Nbins_tot : optional int
-#              Total number of wvelgnths bins.
-#
-#              Default = 1000
-#
-#        Denser_Center : optional bool
-#              Populates denser the regions close to Lyman-alpha
-#
-#              Default = True
-#
-#        normed : optional bool
-#              If True, nomalizes the line profile.
-#
-#        scaled : optinal bool
-#              If True, divides the line profile by its maximum.
-#
-#        **Output**
-#
-#        rest_w_Arr : 1-D sequence of float
-#              Wavelgnth array where the line is evaluated in the rest frame.
-#
-#        train_line : 1-D sequence of float
-#              Line profile.
-#
-#        z_max_i : float
-#              Redshift of the source if the global maximum of the spectrum is the
-#              Lyman-alpha wavelegth.
-#
-#        INPUT: 1-D secuence of float
-#              The actuall input to use in the Neural networks.
-#    '''
-#
-#    w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
-#
-#    rest_w_Arr , train_line , z_max_i , INPUT = Treat_A_Line_To_NN_Input( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled )
-#
-#    if RETURN_ALL==False :
-#        return rest_w_Arr , train_line , z_max_i , INPUT
-#
-#    if RETURN_ALL==True:
-#        return rest_w_Arr , train_line , z_max_i , INPUT , dic
-##====================================================================#
-##====================================================================#
-##====================================================================#
-#def Generate_a_line_for_training_SMOOTH( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, normed=False, scaled=True , Delta_min = -10.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None , RETURN_ALL=False ):
-#
-#    w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
-#
-#    rest_w_Arr , train_line , z_max_i , INPUT , dic_treat = Treat_A_Line_To_NN_Input_SMOOTH( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled )
-#
-#    for my_key in dic_treat.keys():
-#
-#        dic['Treat_' + my_key ] = dic_treat[ my_key ]
-#
-#    if RETURN_ALL==False :
-#        return rest_w_Arr , train_line , z_max_i , INPUT
-#
-#    if RETURN_ALL==True:
-#        return rest_w_Arr , train_line , z_max_i , INPUT , dic
-##====================================================================#
-##====================================================================#
-##====================================================================#
-#def Generate_a_line_for_training_CONVOLUTION_SMOOTH( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, normed=False, scaled=True , Delta_min = -10.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None , RETURN_ALL     =False ):
-#
-#    w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
-#
-#    rest_w_Arr , train_line , z_max_i , INPUT , dic_treat = Treat_A_Line_To_NN_Input_CONVOLUTION_SMOOTH( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled )
-#
-#    for my_key in dic_treat.keys():
-#
-#        dic['Treat_' + my_key ] = dic_treat[ my_key ]
-#
-#    if RETURN_ALL==False :
-#        return rest_w_Arr , train_line , z_max_i , INPUT
-#
-#    if RETURN_ALL==True:
-#        return rest_w_Arr , train_line , z_max_i , INPUT , dic
-#====================================================================#
-#====================================================================#
-#====================================================================#
 def Generate_a_line_for_training_PCA( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, PCA_model , normed=False, scaled=True , Delta_min = -18.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None ,      RETURN_ALL=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
+
+    '''
+        Creates a mock line profile at the desired redshift and returns all the NN
+        products.
+    
+        **Input**
+    
+        z_t : float
+              Redshift
+    
+        V_t : float
+              Outflow expansion velocity [km/s]
+    
+        log_N_t : float
+                  logarithmic of the neutral hydrogen column density in cm**-2
+    
+        t_t : float
+              Dust optical depth
+    
+        F_t : float
+              Total flux of the line. You can pass 1.
+    
+        log_EW_t : optional, float
+                   Logarithmic of the rest frame intrisic equivalent width of the line [A]
+                   Requiered if Geometry == 'Thin_Shell_Cont'
+    
+        W_t : optional, float
+               Rest frame intrisic width of the Lyman-alpha line [A]
+               Requiered if Geometry == 'Thin_Shell_Cont'
+    
+        PNR_t : float
+                Signal to noise ratio of the global maximum of the line profile.
+    
+        FWHM_t : float
+                 Full width half maximum [A] of the experiment. This dilutes the line profile.
+    
+        PIX_t : float
+                Pixel size in wavelgnth [A] of the experiment. This binnes the line profile.
+    
+        DATA_LyaRT : python dictionary
+                     Contains the grid information.
+    
+        Geometry : string
+                   Outflow geometry to use.
+    
+        Delta_min : optional float
+              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = -18.5
+    
+        Delta_min : optional float
+              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = +18.5
+    
+        Nbins_tot : optional int
+              Total number of wvelgnths bins.
+    
+              Default = 1000
+    
+        Denser_Center : optional bool
+              Populates denser the regions close to Lyman-alpha
+    
+              Default = True
+    
+        normed : optional bool
+              If True, nomalizes the line profile.
+    
+        scaled : optinal bool
+              If True, divides the line profile by its maximum.
+    
+        **Output**
+    
+        rest_w_Arr : 1-D sequence of float
+              Wavelgnth array where the line is evaluated in the rest frame.
+    
+        train_line : 1-D sequence of float
+              Line profile.
+    
+        z_max_i : float
+              Redshift of the source if the global maximum of the spectrum is the
+              Lyman-alpha wavelegth.
+    
+        INPUT: 1-D secuence of float
+              The actuall input to use in the Neural networks.
+    '''
+
 
     w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
 
@@ -3590,6 +3446,93 @@ def Generate_a_line_for_training_PCA( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_
 #====================================================================#
 def Generate_a_line_for_training_PCA_NOz( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, PCA_model , normed=False, scaled=True , Delta_min = -18.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None ,      RETURN_ALL=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
 
+    '''
+        Creates a mock line profile at the desired redshift and returns all the NN
+        products.
+    
+        **Input**
+    
+        z_t : float
+              Redshift
+    
+        V_t : float
+              Outflow expansion velocity [km/s]
+    
+        log_N_t : float
+                  logarithmic of the neutral hydrogen column density in cm**-2
+    
+        t_t : float
+              Dust optical depth
+    
+        F_t : float
+              Total flux of the line. You can pass 1.
+    
+        log_EW_t : optional, float
+                   Logarithmic of the rest frame intrisic equivalent width of the line [A]
+                   Requiered if Geometry == 'Thin_Shell_Cont'
+    
+        W_t : optional, float
+               Rest frame intrisic width of the Lyman-alpha line [A]
+               Requiered if Geometry == 'Thin_Shell_Cont'
+    
+        PNR_t : float
+                Signal to noise ratio of the global maximum of the line profile.
+    
+        FWHM_t : float
+                 Full width half maximum [A] of the experiment. This dilutes the line profile.
+    
+        PIX_t : float
+                Pixel size in wavelgnth [A] of the experiment. This binnes the line profile.
+    
+        DATA_LyaRT : python dictionary
+                     Contains the grid information.
+    
+        Geometry : string
+                   Outflow geometry to use.
+    
+        Delta_min : optional float
+              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = -18.5
+    
+        Delta_min : optional float
+              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = +18.5
+    
+        Nbins_tot : optional int
+              Total number of wvelgnths bins.
+    
+              Default = 1000
+    
+        Denser_Center : optional bool
+              Populates denser the regions close to Lyman-alpha
+    
+              Default = True
+    
+        normed : optional bool
+              If True, nomalizes the line profile.
+    
+        scaled : optinal bool
+              If True, divides the line profile by its maximum.
+    
+        **Output**
+    
+        rest_w_Arr : 1-D sequence of float
+              Wavelgnth array where the line is evaluated in the rest frame.
+    
+        train_line : 1-D sequence of float
+              Line profile.
+    
+        z_max_i : float
+              Redshift of the source if the global maximum of the spectrum is the
+              Lyman-alpha wavelegth.
+    
+        INPUT: 1-D secuence of float
+              The actuall input to use in the Neural networks.
+    '''
+
+
     w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
 
     rest_w_Arr , train_line , z_max_i , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA_NOz( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled , Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
@@ -3600,143 +3543,6 @@ def Generate_a_line_for_training_PCA_NOz( z_t , V_t, log_N_t, t_t, F_t, log_EW_t
     if RETURN_ALL==True:
         return rest_w_Arr , train_line , z_max_i , pca_features , INPUT , dic
 #====================================================================#
-#====================================================================#
-#====================================================================#
-#====================================================================#
-##def Generate_a_line_for_training_PCA_NOz_PIX_FWHM( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, PCA_model , normed=False, scaled=True , Delta_min = -18.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None ,      RETURN_ALL=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
-##
-##    w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
-##
-##    rest_w_Arr , train_line , z_max_i , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA_NOz_PIX_FWHM( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled , Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
-##
-##    if RETURN_ALL==False :
-##        return rest_w_Arr , train_line , z_max_i , pca_features , INPUT
-##
-##    if RETURN_ALL==True:
-##        return rest_w_Arr , train_line , z_max_i , pca_features , INPUT , dic
-###====================================================================#
-###====================================================================#
-###====================================================================#
-##def Generate_a_line_for_training_PCA_Iter( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, PCA_model , dic_MACHINES , normed=False, scaled=True , Delta_min = -18.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None ,  RETURN_ALL=False ):
-##
-##    w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
-##
-##    rest_w_Arr , train_line , z_max_i , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA_Iter( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , PCA_model , dic_MACHINES , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled )
-##
-##    if RETURN_ALL==False :
-##        return rest_w_Arr , train_line , z_max_i , pca_features , INPUT
-##
-##    if RETURN_ALL==True:
-##        return rest_w_Arr , train_line , z_max_i , pca_features , INPUT , dic
-###====================================================================#
-###====================================================================#
-###====================================================================#
-##def Generate_a_line_for_training_PCA_models( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, normed=False, scaled=True , Delta_min = -18.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None ,      RETURN_ALL=False ):
-##
-##    w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
-##
-##    w_r_i_Arr , Delta_r_i_Arr , f_r_i_Arr , z_max_i , rest_w_Arr , NN_line =  Treat_A_Line_To_PCA_SMOOTH_Input( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=True , normed=False, scaled=True )
-##
-##    dic['w_r_i_Arr'] = w_r_i_Arr
-##    dic['Delta_r_i_Arr'] = Delta_r_i_Arr
-##    dic['f_r_i_Arr'] = f_r_i_Arr
-##    dic['z_max_i'] = z_max_i
-##    dic['rest_w_Arr'] = rest_w_Arr
-##
-##    return NN_line , dic
-###====================================================================#
-###====================================================================#
-#====================================================================#
-#def Generate_a_line_for_training_PCA_Smooth( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t, PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry, PCA_model , normed=False, scaled=True , Delta_min = -18.5 , Delta_max=18.5 , Denser_Center=True , Nbins_tot=1000 ,  T_IGM_Arr=None , w_IGM_Arr=None ,      RETURN_ALL=False ):
-#
-#    w_t_Arr , f_t_Arr , Noise_t_Arr , dic = Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, DATA_LyaRT, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr , RETURN_ALL=True )
-#
-#    rest_w_Arr , train_line , z_max_i , pca_features , INPUT , _ = Treat_A_Line_To_NN_Input_PCA_Smooth( w_t_Arr , f_t_Arr , PIX_t , FWHM_t , PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot , Denser_Center=Denser_Center , normed=normed , scaled=scaled )
-#
-#    if RETURN_ALL==False :
-#        return rest_w_Arr , train_line , z_max_i , pca_features , INPUT
-#
-#    if RETURN_ALL==True:
-#        return rest_w_Arr , train_line , z_max_i , pca_features , INPUT , dic
-##====================================================================#
-#====================================================================#
-#def generate_a_REAL_line_SN( z_f , V_f , logNH_f , ta_f , F_line_f , SN_f , FWHM_f , PIX_f , w_min , w_max , DATA_LyaRT , Geometry ,  T_IGM_Arr=None , w_IGM_Arr=None ):
-#    '''
-#        Makes a mock line profile for the other geometries that are not Thin_Shell_Cont geometry.
-#
-#        **Input**
-#
-#        z_t : float
-#              Redshift
-#
-#        V_t : float
-#              Outflow expansion velocity [km/s]
-#
-#        log_N_t : float
-#                  logarithmic of the neutral hydrogen column density in cm**-2
-#
-#        t_t : float
-#              Dust optical depth
-#
-#        F_line_f : float
-#              Total flux of the line. You can pass 1.
-#
-#        SN_t : float
-#                Signal to noise ratio.
-#
-#        FWHM_t : float
-#                 Full width half maximum [A] of the experiment. This dilutes the line profile.
-#
-#        PIX_t : float
-#                Pixel size in wavelgnth [A] of the experiment. This binnes the line profile.
-#
-#        DATA_LyaRT : python dictionary
-#                     Contains the grid information.
-#
-#        Geometry : string
-#                   Outflow geometry to use.
-#
-#        **Output**
-#
-#        wave_pix_Arr : 1-D sequence of float
-#                     Wavelgnth array where the line is evaluated in the observed frame.
-#
-#        noisy_Line_Arr : 1-D sequence of float
-#                   Line profile flux density in arbitrary units.
-#
-#        dic : python dictionaty.
-#              Contains all the meta data used to get the line profiles:
-#                'w_rest'    : restframe wavelength of line before reducing quality
-#                'w_obs'     : wavelength of line before reducing quality
-#                'Intrinsic' : line profile before quality reduction
-#                'Diluted'   : Line profile after the FWHM has been applyed.
-#                'Pixelated' : Line profile after the FWHM and PIX have been applyed
-#                'Noise'     : Particular noise patern used.
-#    '''
-#
-#    w_rest_Arr , wavelength_Arr , line_Arr = generate_a_obs_line( z_f , V_f , logNH_f , ta_f , DATA_LyaRT , Geometry ,  T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_Arr )
-#
-#    diluted_Arr = dilute_line( wavelength_Arr , line_Arr , FWHM_f )
-#
-#    wave_pix_Arr = np.arange( w_min , w_max , PIX_f )
-#
-#    pixled_Arr = bin_one_line( wavelength_Arr , diluted_Arr , wave_pix_Arr , PIX_f )
-#
-#    pixled_Arr = pixled_Arr * F_line_f * 1. / np.trapz( pixled_Arr , wave_pix_Arr )
-#
-#    noisy_Line_Arr , noise_Arr = Add_noise_to_line( wave_pix_Arr , pixled_Arr , SN_f , same_norm=False )
-#
-#    # Other usful things :
-#
-#    dic = {}
-#
-#    dic[ 'w_rest'    ] = w_rest_Arr
-#    dic[ 'w_obs'     ] = wavelength_Arr
-#    dic[ 'Intrinsic' ] = line_Arr
-#    dic[ 'Diluted'   ] = diluted_Arr
-#    dic[ 'Pixelated' ] = pixled_Arr
-#
-#    return wave_pix_Arr , noisy_Line_Arr , dic
 #====================================================================#
 #====================================================================#
 #====================================================================#
@@ -5163,6 +4969,87 @@ def NN_measure_ALL_props( w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX_tar
 #====================================================================#
 def NN_measure_PCA( PROP , w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX_tar , loaded_model , w_rest_Machine_Arr , PCA_model , N_iter=None , normed=False , scaled=True, Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
 
+
+    '''
+        Fits 1 parameter of a Lyman-alpha line profile.
+    
+        **Input**
+   
+        PROP : string
+               Parameter to be fitted. E.g. logV , logN, logt, etc.
+ 
+        w_tar_Arr : 1-D sequence of floats
+                    wavelength where the densit flux is evaluated
+    
+        f_tar_Arr : 1-D sequence of floats
+                    Densit flux is evaluated
+    
+        s_tar_Arr : 1-D sequence of floats
+                    Uncertainty of the densit flux is evaluated
+    
+        FWHM_tar : float
+              Full width half maximum [A] of the experiment.
+    
+        PIX_tar : float
+                  Pixelization of the line profiles due to the experiment [A]
+    
+        DIC_loaded_models : optinal dictionary
+                 Should contain all the models for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it.
+    
+        w_rest_Machine_Arr : 1-D sequence of floats
+                      wavelength used by the INPUT of the DNN
+    
+        my_PCA_model : optinal dictionary
+                 Should contain all the PCA data for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it.
+    
+        N_iter : optional int
+                 Number of Monte Carlo iterations of the observed espectrum.
+                 If None, no iteration is done.
+                 Default None
+    
+        Delta_min : optional float
+              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = -12.0
+    
+        Delta_min : optional float
+              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = +12.0
+    
+        Nbins_tot : optional int
+              Total number of wvelgnths bins.
+    
+              Default = 600
+    
+        Denser_Center : optional bool
+              Populates denser the regions close to Lyman-alpha
+    
+              Default = True
+    
+        normed : optional bool
+              If True, nomalizes the line profile.
+    
+        scaled : optinal bool
+              If True, divides the line profile by its maximum.
+    
+        Random_z_in : optinal list of legnth=2
+             List with the minimum and maximum redshift for doing Feature importance analysis.
+             For example [0.01,4.0]. This variable will input a random redshift with in the
+             interval as a proxy redshift. This variable should only be used when doing a
+             feature importance analysis. If you are not doing it, leave it as None. Otherwide
+             you will get, probably, bad results. For example [0.01,4.0].
+    
+        **Output**
+    
+                Sol : 1-D sequence of float
+                      Array with the solution of the observed spectrum. No Monte Carlo perturbation.
+    
+                Sol_Iter : Numpy array with the solution for each iteration.
+    '''
+
     w_rest_tar_Arr , f_rest_tar_Arr , z_max_tar , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center , normed=normed, scaled=scaled ,  Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
 
     assert np.sum( w_rest_tar_Arr - w_rest_Machine_Arr) == 0 , 'wavelength array of machine and measure dont match. Check that Delta_min, Delta_max, Nbins_tot and Denser_Center are the same in the model and the imput here.'
@@ -5197,6 +5084,84 @@ def NN_measure_PCA( PROP , w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX_ta
 #====================================================================#
 #====================================================================#
 def NN_measure_PCA_ALL_props( w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX_tar , DIC_loaded_models , w_rest_Machine_Arr , PCA_model , machine_names , N_iter=None , normed=False , scaled=True, Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , FORCE_RANDOM_z=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
+
+    '''
+        Fits a Lyman-alpha line profile.
+    
+        **Input**
+    
+        w_tar_Arr : 1-D sequence of floats
+                    wavelength where the densit flux is evaluated
+    
+        f_tar_Arr : 1-D sequence of floats
+                    Densit flux is evaluated
+    
+        s_tar_Arr : 1-D sequence of floats
+                    Uncertainty of the densit flux is evaluated
+    
+        FWHM_tar : float
+              Full width half maximum [A] of the experiment.
+    
+        PIX_tar : float
+                  Pixelization of the line profiles due to the experiment [A]
+    
+        DIC_loaded_models : optinal dictionary
+                 Should contain all the models for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it.
+    
+        w_rest_Machine_Arr : 1-D sequence of floats
+                      wavelength used by the INPUT of the DNN
+    
+        my_PCA_model : optinal dictionary
+                 Should contain all the PCA data for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it.
+    
+        N_iter : optional int
+                 Number of Monte Carlo iterations of the observed espectrum.
+                 If None, no iteration is done.
+                 Default None
+    
+        Delta_min : optional float
+              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = -12.0
+    
+        Delta_min : optional float
+              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = +12.0
+    
+        Nbins_tot : optional int
+              Total number of wvelgnths bins.
+    
+              Default = 600
+    
+        Denser_Center : optional bool
+              Populates denser the regions close to Lyman-alpha
+    
+              Default = True
+    
+        normed : optional bool
+              If True, nomalizes the line profile.
+    
+        scaled : optinal bool
+              If True, divides the line profile by its maximum.
+    
+        Random_z_in : optinal list of legnth=2
+             List with the minimum and maximum redshift for doing Feature importance analysis.
+             For example [0.01,4.0]. This variable will input a random redshift with in the
+             interval as a proxy redshift. This variable should only be used when doing a
+             feature importance analysis. If you are not doing it, leave it as None. Otherwide
+             you will get, probably, bad results. For example [0.01,4.0].
+    
+        **Output**
+    
+                Sol : 1-D sequence of float
+                      Array with the solution of the observed spectrum. No Monte Carlo perturbation.
+    
+                Sol_Iter : Numpy structure with all the chains information. Length=N_ITER.
+    '''
+
 
     w_rest_tar_Arr , f_rest_tar_Arr , z_max_tar , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center , normed=normed, scaled=scaled , FORCE_RANDOM_z=FORCE_RANDOM_z , Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
 
@@ -5251,73 +5216,153 @@ def NN_measure_PCA_ALL_props( w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX
 #====================================================================#
 #====================================================================#
 #====================================================================#
-def NN_measure_PCA_DIFF_ALL_props( w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX_tar , DIC_loaded_models , w_rest_Machine_Arr , PCA_model , machine_names , N_iter=None , normed=False , scaled=True, Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , FORCE_RANDOM_z=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
-
-    #machine_names = [ 'Dl' , 'logV' , 'logN' , 'logt' , 'logE' , 'logW' , 'f1A' , 'f2A' , 'f4A' ]
-
-    formats = [ np.float32 ] * len( machine_names)
-
-    w_Lya = 1215.673123 #A
-
-    #################### 1 iter #####################
-
-    Sol = np.zeros( 1 , np.dtype({'names': machine_names, 'formats': formats}) )
-
-    #print( 'Input shape' , INPUT.shape )
-
-    last_prop = None
-
-    for prop in machine_names :
-
-        #print( prop )
-        if last_prop in [ 'Dl' , None ]:
-            w_rest_tar_Arr , f_rest_tar_Arr , z_max_tar , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , PCA_model[ prop ] , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center , normed=normed, scaled=scaled , FORCE_RANDOM_z=FORCE_RANDOM_z , Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
-
-        else:
-            continue
-        #print( INPUT.shape )
-
-        tmp_Sol = DIC_loaded_models[ prop ].predict( INPUT )
-
-        assert np.sum( w_rest_tar_Arr - w_rest_Machine_Arr) == 0 , 'wavelength array of machine and measure dont match. Check that Delta_min, Delta_max, Nbins_tot and Denser_Center are the same in the model and the imput here.'
-
-        if prop == 'Dl':
-            tmp_Sol = [ ( w_Lya + tmp_Sol[0] ) * ( 1 + z_max_tar ) * 1. / ( w_Lya ) - 1. ]
-
-        Sol[prop][0] = tmp_Sol[0] 
-
-    if N_iter is None or N_iter==0 :
-        return Sol 
-
-    #################### N iter #####################
-
-    if N_iter > 0 :
-
-        Sol_Iter = np.zeros( N_iter , np.dtype({'names': machine_names, 'formats': formats}) )
-
-        for i in range( 0 , N_iter ) :
-
-            f_obs_i_Arr = f_tar_Arr + np.random.randn( len( f_tar_Arr ) ) * s_tar_Arr
-
-            for prop in machine_names :
-            
-                if last_prop in [ 'Dl' , None ]:
-                    w_rest_i_Arr , f_rest_i_Arr , z_max_i , pca_features , INPUT_i = Treat_A_Line_To_NN_Input_PCA( w_tar_Arr , f_obs_i_Arr , PIX_tar , FWHM_tar , PCA_model[prop] , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center, normed=normed, scaled=scaled , FORCE_RANDOM_z=FORCE_RANDOM_z , Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
-                else:
-                    continue
-
-                Sol_i =  DIC_loaded_models[ prop ].predict( INPUT_i )
-
-                if prop == 'Dl':
-                    Sol_i = [ ( w_Lya + Sol_i[0] ) * ( 1 + z_max_i ) * 1. / ( w_Lya ) - 1. ]
-
-                Sol_Iter[ prop ][ i ] = Sol_i[0]
-
-        return Sol , Sol_Iter
+#def NN_measure_PCA_DIFF_ALL_props( w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX_tar , DIC_loaded_models , w_rest_Machine_Arr , PCA_model , machine_names , N_iter=None , normed=False , scaled=True, Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , FORCE_RANDOM_z=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
+#
+#    #machine_names = [ 'Dl' , 'logV' , 'logN' , 'logt' , 'logE' , 'logW' , 'f1A' , 'f2A' , 'f4A' ]
+#
+#    formats = [ np.float32 ] * len( machine_names)
+#
+#    w_Lya = 1215.673123 #A
+#
+#    #################### 1 iter #####################
+#
+#    Sol = np.zeros( 1 , np.dtype({'names': machine_names, 'formats': formats}) )
+#
+#    #print( 'Input shape' , INPUT.shape )
+#
+#    last_prop = None
+#
+#    for prop in machine_names :
+#
+#        #print( prop )
+#        if last_prop in [ 'Dl' , None ]:
+#            w_rest_tar_Arr , f_rest_tar_Arr , z_max_tar , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , PCA_model[ prop ] , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center , normed=normed, scaled=scaled , FORCE_RANDOM_z=FORCE_RANDOM_z , Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
+#
+#        else:
+#            continue
+#        #print( INPUT.shape )
+#
+#        tmp_Sol = DIC_loaded_models[ prop ].predict( INPUT )
+#
+#        assert np.sum( w_rest_tar_Arr - w_rest_Machine_Arr) == 0 , 'wavelength array of machine and measure dont match. Check that Delta_min, Delta_max, Nbins_tot and Denser_Center are the same in the model and the imput here.'
+#
+#        if prop == 'Dl':
+#            tmp_Sol = [ ( w_Lya + tmp_Sol[0] ) * ( 1 + z_max_tar ) * 1. / ( w_Lya ) - 1. ]
+#
+#        Sol[prop][0] = tmp_Sol[0] 
+#
+#    if N_iter is None or N_iter==0 :
+#        return Sol 
+#
+#    #################### N iter #####################
+#
+#    if N_iter > 0 :
+#
+#        Sol_Iter = np.zeros( N_iter , np.dtype({'names': machine_names, 'formats': formats}) )
+#
+#        for i in range( 0 , N_iter ) :
+#
+#            f_obs_i_Arr = f_tar_Arr + np.random.randn( len( f_tar_Arr ) ) * s_tar_Arr
+#
+#            for prop in machine_names :
+#            
+#                if last_prop in [ 'Dl' , None ]:
+#                    w_rest_i_Arr , f_rest_i_Arr , z_max_i , pca_features , INPUT_i = Treat_A_Line_To_NN_Input_PCA( w_tar_Arr , f_obs_i_Arr , PIX_tar , FWHM_tar , PCA_model[prop] , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center, normed=normed, scaled=scaled , FORCE_RANDOM_z=FORCE_RANDOM_z , Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
+#                else:
+#                    continue
+#
+#                Sol_i =  DIC_loaded_models[ prop ].predict( INPUT_i )
+#
+#                if prop == 'Dl':
+#                    Sol_i = [ ( w_Lya + Sol_i[0] ) * ( 1 + z_max_i ) * 1. / ( w_Lya ) - 1. ]
+#
+#                Sol_Iter[ prop ][ i ] = Sol_i[0]
+#
+#        return Sol , Sol_Iter
 #====================================================================#
 #====================================================================#
 #====================================================================#
 def NN_measure_PCA_NOz( PROP , w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX_tar , loaded_model , w_rest_Machine_Arr , PCA_model , N_iter=None , normed=False , scaled=True, Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
+
+    '''
+        Fits 1 parameter of a Lyman-alpha line profile.
+    
+        **Input**
+    
+        PROP : string
+               Parameter to be fitted. E.g. logV , logN, logt, etc.
+    
+        w_tar_Arr : 1-D sequence of floats
+                    wavelength where the densit flux is evaluated
+    
+        f_tar_Arr : 1-D sequence of floats
+                    Densit flux is evaluated
+    
+        s_tar_Arr : 1-D sequence of floats
+                    Uncertainty of the densit flux is evaluated
+    
+        FWHM_tar : float
+              Full width half maximum [A] of the experiment.
+    
+        PIX_tar : float
+                  Pixelization of the line profiles due to the experiment [A]
+    
+        DIC_loaded_models : optinal dictionary
+                 Should contain all the models for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it.
+    
+        w_rest_Machine_Arr : 1-D sequence of floats
+                      wavelength used by the INPUT of the DNN
+    
+        my_PCA_model : optinal dictionary
+                 Should contain all the PCA data for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it.
+    
+        N_iter : optional int
+                 Number of Monte Carlo iterations of the observed espectrum.
+                 If None, no iteration is done.
+                 Default None
+    
+        Delta_min : optional float
+              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = -12.0
+    
+        Delta_min : optional float
+              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+    
+              Default = +12.0
+    
+        Nbins_tot : optional int
+              Total number of wvelgnths bins.
+    
+              Default = 600
+    
+        Denser_Center : optional bool
+              Populates denser the regions close to Lyman-alpha
+    
+              Default = True
+    
+        normed : optional bool
+              If True, nomalizes the line profile.
+    
+        scaled : optinal bool
+              If True, divides the line profile by its maximum.
+    
+        Random_z_in : optinal list of legnth=2
+             List with the minimum and maximum redshift for doing Feature importance analysis.
+             For example [0.01,4.0]. This variable will input a random redshift with in the
+             interval as a proxy redshift. This variable should only be used when doing a
+             feature importance analysis. If you are not doing it, leave it as None. Otherwide
+             you will get, probably, bad results. For example [0.01,4.0].
+    
+        **Output**
+    
+                Sol : 1-D sequence of float
+                      Array with the solution of the observed spectrum. No Monte Carlo perturbation.
+    
+                Sol_Iter : Numpy array with the solution for each iteration.
+    '''
 
     w_rest_tar_Arr , f_rest_tar_Arr , z_max_tar , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA_NOz( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center , normed=normed, scaled=scaled ,  Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
 
@@ -5356,6 +5401,83 @@ def NN_measure_PCA_NOz( PROP , w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PI
 #====================================================================#
 #====================================================================#
 def NN_measure_PCA_ALL_props_NOz( w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar , PIX_tar , DIC_loaded_models , w_rest_Machine_Arr , PCA_model , machine_names , N_iter=None , normed=False , scaled=True, Delta_min=-12.0 , Delta_max=12.0 , Nbins_tot=600 , Denser_Center=True , FORCE_RANDOM_z=False , Random_z_in=None , Random_PIX_in=None , Random_FWHM_in=None ):
+
+    '''
+        Fits a Lyman-alpha line profile.
+        
+        **Input**
+        
+        w_tar_Arr : 1-D sequence of floats
+                    wavelength where the densit flux is evaluated
+        
+        f_tar_Arr : 1-D sequence of floats
+                    Densit flux is evaluated
+        
+        s_tar_Arr : 1-D sequence of floats
+                    Uncertainty of the densit flux is evaluated
+        
+        FWHM_tar : float
+              Full width half maximum [A] of the experiment.
+        
+        PIX_tar : float
+                  Pixelization of the line profiles due to the experiment [A]
+        
+        DIC_loaded_models : optinal dictionary
+                 Should contain all the models for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it.
+
+        w_rest_Machine_Arr : 1-D sequence of floats
+                      wavelength used by the INPUT of the DNN
+
+        my_PCA_model : optinal dictionary
+                 Should contain all the PCA data for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it.
+
+        N_iter : optional int
+                 Number of Monte Carlo iterations of the observed espectrum.
+                 If None, no iteration is done.
+                 Default None
+        
+        Delta_min : optional float
+              Defines the minimum rest frame wavelegnth with respecto to Lyman-alpha.
+        
+              Default = -12.0
+        
+        Delta_min : optional float
+              Defines the maximum rest frame wavelegnth with respecto to Lyman-alpha.
+        
+              Default = +12.0
+        
+        Nbins_tot : optional int
+              Total number of wvelgnths bins.
+        
+              Default = 600
+        
+        Denser_Center : optional bool
+              Populates denser the regions close to Lyman-alpha
+        
+              Default = True
+        
+        normed : optional bool
+              If True, nomalizes the line profile.
+        
+        scaled : optinal bool
+              If True, divides the line profile by its maximum.
+        
+        Random_z_in : optinal list of legnth=2
+             List with the minimum and maximum redshift for doing Feature importance analysis.
+             For example [0.01,4.0]. This variable will input a random redshift with in the
+             interval as a proxy redshift. This variable should only be used when doing a
+             feature importance analysis. If you are not doing it, leave it as None. Otherwide
+             you will get, probably, bad results. For example [0.01,4.0].
+        
+        **Output**
+    
+                Sol : 1-D sequence of float
+                      Array with the solution of the observed spectrum. No Monte Carlo perturbation.
+            
+                Sol_Iter : Numpy structure with all the chains information. Length=N_ITER. 
+    '''
 
     w_rest_tar_Arr , f_rest_tar_Arr , z_max_tar , pca_features , INPUT = Treat_A_Line_To_NN_Input_PCA_NOz( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center , normed=normed, scaled=scaled , FORCE_RANDOM_z=FORCE_RANDOM_z , Random_z_in=Random_z_in , Random_PIX_in=Random_PIX_in , Random_FWHM_in=Random_FWHM_in )
 
@@ -5679,11 +5801,6 @@ def compute_Correction_FACTOR_uncertainty_INDIVIDUAL( PNR , FWHM , Q_value , DAT
 #====================================================================#
 def Correction_factor_uncertainties( PNR_Arr , FWHM_Arr , Confidence_level , Property_name , NN_name ):
 
-    #if NN_name == 'IGM+z' : folder = '/ZALL_PCA_CHRIS/'
-    #if NN_name == 'IGM-z' : folder = '/NO_z_ZALL/'
-    #if NN_name == 'NoIGM' : folder = '/IGM_FREE/'
-
-    #dir_with_data = '/Users/sidgurung/Desktop/LINK/'+ folder +'/ACCURACY_ITERATIONS_CNN/'
     dir_with_data = Pipieline_Zelda_2_get_dir_machines( NN_name )
 
     file_name = 'data_Uncertainty_corrections_FACTOR_COMPUTATION_'+ Property_name +'.npy'
@@ -5707,12 +5824,6 @@ def Pipieline_Zelda_2_get_dir_machines( MODE ):
 
     this_dir, this_filename = os.path.split(__file__)
 
-    #arxiv_with_file_names = this_dir + '/DATA/List_of_DATA_files'
-
-    #if MODE == 'IGM+z': pac_dir = '/Users/sidgurung/Desktop/LINK/ZALL_PCA_CHRIS/MACHINES/'
-    #if MODE == 'IGM-z': pac_dir = '/Users/sidgurung/Desktop/LINK/NO_z_ZALL/MACHINES/'
-    #if MODE == 'NoIGM': pac_dir = '/Users/sidgurung/Desktop/LINK/IGM_FREE/MACHINES/'
-
     pac_dir = this_dir + '/DATA/MODELS_ZELDA_II/MODELS_' + MODE + '/'
 
     return pac_dir
@@ -5734,7 +5845,23 @@ def Pipieline_Zelda_2_Load_PCA( MODE , N_bins , Delta_min_line , Delta_max_line 
 #====================================================================#
 #====================================================================#
 def Pipieline_Zelda_2_Load_Models( MODE ):
+    '''
+        Loads all the data of models to fir IGM absorbed Lyman alpha line profiles.
+        
+        **Input**
 
+        MODE : string
+                       Fitting mode to be used: IGM+z, IGM-z, NoIGM.
+        
+        **Output**
+
+        DIC_loaded_models : optinal dictionary
+                 Should contain all the models for the fit. 
+        
+        my_PCA_model : optinal dictionary
+                 Should contain all the PCA data for the fit. 
+
+    '''
     # Load machine
     N_COMPONENTS = 100
     HIDEN_Layer  = '1500000_103_53_25'
@@ -5787,7 +5914,78 @@ def Pipieline_Zelda_2_Load_Models( MODE ):
 #====================================================================#
 #====================================================================#
 def Fit_Observed_line_with_IGM( w_tar_Arr , f_tar_Arr , s_tar_Arr , PIX_tar , FWHM_tar , MODE='IGM+z' , N_ITER=1000 , DIC_loaded_models=None , my_PCA_model=None , Random_z_in=None , CORRECT_PERCENTILES=True ):
+    '''
+        Fits a Lyman-alpha line profile. 
+        
+        **Input**
+        
+        w_tar_Arr : 1-D sequence of floats
+                    wavelength where the densit flux is evaluated
+        
+        f_tar_Arr : 1-D sequence of floats
+                    Densit flux is evaluated
+        
+        s_tar_Arr : 1-D sequence of floats
+                    Uncertainty of the densit flux is evaluated
+        
+        FWHM : float
+              Full width half maximum [A] of the experiment.
+        
+        PIX_tar : float
+                  Pixelization of the line profiles due to the experiment [A]
+        
+        MODE : optional string
+                       Fitting mode to be used: IGM+z, IGM-z, NoIGM.
+        
+        N_ITER : optional int
+                 Number of Monte Carlo iterations of the observed espectrum.
+                 If None, no iteration is done.
+                 Default None
+       
+        DIC_loaded_models : optinal dictionary
+                 Should contain all the models for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it. 
 
+        my_PCA_model : optinal dictionary
+                 Should contain all the PCA data for the fit. Can be obtained from running...
+                 Pipieline_Zelda_2_Load_Models( MODE ). If None, it will automatically load it. 
+
+        Random_z_in : optinal list of legnth=2
+              List with the minimum and maximum redshift for doing Feature importance analysis.
+              For example [0.01,4.0]. This variable will input a random redshift with in the
+              interval as a proxy redshift. This variable should only be used when doing a
+              feature importance analysis. If you are not doing it, leave it as None. Otherwide
+              you will get, probably, bad results. For example [0.01,4.0].
+        
+        CORRECT_PERCENTILES : optinal bool
+              If True, corrects the percentiles normally understimated. 
+        
+        **Output**
+        
+        RESULTS : python dictionary  
+
+            RESULTS[ 'All'  ] : Numpy structure with all the chains information. Length=N_ITER. 
+            RESULTS[ 'FWHM' ] = Observed FWHM
+            RESULTS[ 'PIX'  ] = Observed pixel size
+            RESULTS[ 'PNR'  ] = Observed S/N in the peak of the line.
+
+            Then, it includes the measure value of the next properties:
+                'Dl' : redshift [no units]
+                'z'  : redshift [no units]
+                'logV' : logarithm of the Outflow bulk velocity [km/s], 
+                'logN' : logarithm of the neutral hydrogen column density [cm**-2]
+                'logt' : logarithm of the Dust optical depth [no untits]
+                'logE' : logarithm of the Rest frame equivalent width [A]
+                'logW' : logarithm of the Rest frame instrinc line width [A]
+                'f1A'  : Lyman alpha IGM escape fraction in a 1A window. 
+                'f2A'  : Lyman alpha IGM escape fraction in a 2A window.
+                'f4A'  : Lyman alpha IGM escape fraction in a 4A window.
+
+            For each of the percentiles : 5 , 16 , 50 , 84 , 95.
+
+            For example  RESULTS[ 'f4A_Q50' ] contains the percentile 50 of the Lyman alpha IGM 
+            escape fraction in a 4A window, RESULTS[ 'f4A_Q16' ] the percentile 16 and so on.
+    '''
     ############################
     ############################
     F_t = 1.0
