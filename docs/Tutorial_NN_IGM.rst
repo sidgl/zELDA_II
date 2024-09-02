@@ -98,6 +98,9 @@ Let's have a look to how the line looks:
 .. image:: figs_and_codes/fig_tutorial_fit_IGM_1.png
    :width: 600 
 
+Fitting a line
+***************
+
 Now that we have our mock line profile, let's fit it. In this example we are going to use `MODE='IGM-z'`. There are three possible modes: `MODE='IGM+z'` , `MODE='IGM-z'` and `MODE='NoIGM'` . Each of these `MODE` use a differente NN with a different training set. `MODE='IGM+z'` is trained so that the IGM transmission curves in the training set match the real IGM evolution with redshift. `MODE='IGM-z'` uses an IGM that is constant with redshift, and therefore it is more unbiased to redshift dependence than `MODE='IGM+z'`. Note that `MODE='IGM+z'` should be baised towards reallity. Then, `MODE='NoIGM'` was trained wihtout the IGM absorption, only the ISM part. 
 
 .. code:: python
@@ -135,6 +138,9 @@ Then, the measured IGM Lya escape fraction 4A arround Lya. is...
           >>> print( RESULTS['f4A_Q50'] , '+-' , RESULTS['f4A_Q84']-RESULTS['f4A_Q16'] )
           >>> 0.8047662675380707 +- [0.06671568]
 
+Showing a fitted line profile
+***************
+
 We can compute the solution line profile as...
 
 .. code:: python
@@ -164,6 +170,9 @@ You should get something like:
 
 .. image:: figs_and_codes/fig_tutorial_fit_IGM_2.png
    :width: 600
+
+Showing the Monte Carlo iterations.
+***************
 
 `RESULTS` also contains all the chain information for each of the noise perturbations in `RESULTS['All']`. Let's plot the chains. For that we will use the functions...
 
