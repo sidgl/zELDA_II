@@ -2,3 +2,4 @@ scipy
 emcee
 scikit-learn
 pyswarms
+sphinx-rtd-theme
