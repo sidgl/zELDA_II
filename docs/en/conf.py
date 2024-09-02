@@ -12,7 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../Lya_zelda_II/'))
+sys.path.insert(0, os.path.abspath('../../Lya_zelda_II/'))
 #sys.path.insert(0, os.path.abspath('../TEST_doc/'))
 
 
