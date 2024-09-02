@@ -12,14 +12,14 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../Lya_zelda/'))
+sys.path.insert(0, os.path.abspath('../Lya_zelda_II/'))
 #sys.path.insert(0, os.path.abspath('../TEST_doc/'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'zELDA'
-copyright = '2021, Gurung-Lopez, Siddhartha'
+copyright = '2024, Gurung-Lopez, Siddhartha'
 author = 'Gurung-Lopez, Siddhartha'
 
 # The full version, including alpha/beta/rc tags
@@ -31,7 +31,7 @@ release = '0.0.01'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc','sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc','sphinx.ext.viewcode','sphinx.ext.autosectionlabel']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -47,22 +47,24 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+#html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_build_dir = os.environ.get('READTHEDOCS_OUTPUT', 'docs/en/build/html')
 ##################################
 ##################################
 ##################################
-import sphinx_rtd_theme
-
-html_theme = 'sphinx_rtd_theme'
-
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-
+#import sphinx_rtd_theme
+#
+#html_theme = 'sphinx_rtd_theme'
+#
+#html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+#
 html_logo = "figs_and_codes/fig_log_DOUBLE_COOL_SHELL_EDGE_r_0.8_s_40_WHITE_True.png"
 
 
