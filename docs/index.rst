@@ -11,18 +11,23 @@ zELDA's documentation v0.0
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents zELDA II:
 
    intro
    installation
    About_the_data_grids
    Tutorial_ideal
    Tutorial_mock
-   Tutorial_DNN
-   Tutorial_Train
    Tutorial_MCMC
    Tutorial_fesc
    funcs
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents zELDA I:
+
+   Tutorial_Train
+   Tutorial_DNN
 
 Indices and tables
 ==================
