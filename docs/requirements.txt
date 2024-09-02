@@ -1,4 +1,4 @@
 scipy
 emcee
-sklearn
+scikit-learn
 pyswarms
