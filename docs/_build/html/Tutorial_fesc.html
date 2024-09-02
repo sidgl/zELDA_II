@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial : Computing Lyman-alpha escape fractions &mdash; zELDA 0.0.01 documentation</title>
+  <title>Tutorial : Computing interestellar medium Lyman-alpha escape fractions &mdash; zELDA 0.0.01 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -45,22 +45,26 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents zELDA II:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="About_the_data_grids.html">About the LyaRT data grids</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial_ideal.html">Tutorial : Computing ideal line profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial_mock.html">Tutorial : Computing mock line profiles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Tutorial_DNN.html">Tutorial : Fitting a line profile using deep learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Tutorial_Train.html">Tutorial : Train your own neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_NN_IGM.html">Tutorial : Fitting a IGM/CGM attenuated line profile using deep learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial_MCMC.html">Tutorial : Fitting a line profile using Monte Carlo Markov Chains</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial : Computing Lyman-alpha escape fractions</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial : Computing interestellar medium Lyman-alpha escape fractions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#default-computation-of-escape-fractions">Default computation of escape fractions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#deeper-options-on-predicting-the-escape-fraction">Deeper options on predicting the escape fraction</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">funcs module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents zELDA I:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_Train.html">Tutorial : Train your own neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_DNN.html">Tutorial : Fitting a line profile using deep learning</a></li>
 </ul>
 
         </div>
@@ -77,7 +81,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Tutorial : Computing Lyman-alpha escape fractions</li>
+      <li class="breadcrumb-item active">Tutorial : Computing interestellar medium Lyman-alpha escape fractions</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/Tutorial_fesc.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -87,8 +91,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tutorial-computing-lyman-alpha-escape-fractions">
-<h1>Tutorial : Computing Lyman-alpha escape fractions<a class="headerlink" href="#tutorial-computing-lyman-alpha-escape-fractions" title="Permalink to this heading"></a></h1>
+  <section id="tutorial-computing-interestellar-medium-lyman-alpha-escape-fractions">
+<h1>Tutorial : Computing interestellar medium Lyman-alpha escape fractions<a class="headerlink" href="#tutorial-computing-interestellar-medium-lyman-alpha-escape-fractions" title="Permalink to this heading"></a></h1>
 <p>In this tutorial you will, hopefully, learn how to compute Lyman-alpha escape fractions with <cite>zELDA</cite>. Note that this part of the code compres directly from <cite>FLaREON</cite> ( <a class="reference external" href="https://github.com/sidgurun/FLaREON">https://github.com/sidgurun/FLaREON</a> , Gurung-lopez et al. 2019b).</p>
 <section id="default-computation-of-escape-fractions">
 <h2>Default computation of escape fractions<a class="headerlink" href="#default-computation-of-escape-fractions" title="Permalink to this heading"></a></h2>

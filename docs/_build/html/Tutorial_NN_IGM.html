@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial : Fitting a IGM/CGM attenuated line profile using deep learning &mdash; zELDA 0.0.01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=10ae0503"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial : Fitting a line profile using Monte Carlo Markov Chains" href="Tutorial_MCMC.html" />
+    <link rel="prev" title="Tutorial : Computing mock line profiles" href="Tutorial_mock.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            zELDA
+              <img src="_static/fig_log_DOUBLE_COOL_SHELL_EDGE_r_0.8_s_40_WHITE_True.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents zELDA II:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="About_the_data_grids.html">About the LyaRT data grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_ideal.html">Tutorial : Computing ideal line profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_mock.html">Tutorial : Computing mock line profiles</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial : Fitting a IGM/CGM attenuated line profile using deep learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_MCMC.html">Tutorial : Fitting a line profile using Monte Carlo Markov Chains</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_fesc.html">Tutorial : Computing interestellar medium Lyman-alpha escape fractions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funcs.html">funcs module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents zELDA I:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_Train.html">Tutorial : Train your own neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_DNN.html">Tutorial : Fitting a line profile using deep learning</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">zELDA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial : Fitting a IGM/CGM attenuated line profile using deep learning</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Tutorial_NN_IGM.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-fitting-a-igm-cgm-attenuated-line-profile-using-deep-learning">
+<h1>Tutorial : Fitting a IGM/CGM attenuated line profile using deep learning<a class="headerlink" href="#tutorial-fitting-a-igm-cgm-attenuated-line-profile-using-deep-learning" title="Permalink to this heading"></a></h1>
+<p>In this tutorial you will, hopefully, learn how fit Lyman-alpha line profiles using deep learning with <cite>zELDA</cite>.</p>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this heading"></a></h2>
+<p>Let’s start by loading <cite>zELDA</cite> creating a mock line profile that we will fit later. For more details on how to create a mock line profile go to <a class="reference internal" href="Tutorial_mock.html"><span class="doc">Mock line profiles</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">Lya_zelda_II</span> <span class="k">as</span> <span class="nn">Lya</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">your_grids_location</span> <span class="o">=</span> <span class="s1">&#39;/This/Folder/Contains/The/Grids/&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Lya</span><span class="o">.</span><span class="n">funcs</span><span class="o">.</span><span class="n">Data_location</span> <span class="o">=</span> <span class="n">your_grids_location</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Geometry</span> <span class="o">=</span> <span class="s1">&#39;Thin_Shell_Cont&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">LyaRT_Grid</span> <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">load_Grid_Line</span><span class="p">(</span> <span class="n">Geometry</span> <span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Defining the model parameters:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z_t</span>      <span class="o">=</span> <span class="mf">3.0</span>   <span class="c1"># redshift of the source</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">V_t</span>      <span class="o">=</span> <span class="mf">50.0</span>  <span class="c1"># Outflow expansion velocity [km/s]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_N_t</span>  <span class="o">=</span> <span class="mf">20.</span>   <span class="c1"># Logarithmic of the neutral hydrogen column density [cm**-2]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t_t</span>      <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># Dust optical depth</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_EW_t</span> <span class="o">=</span> <span class="mf">1.5</span>   <span class="c1"># Logarithmic the intrinsic equivalent width [A]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W_t</span>      <span class="o">=</span> <span class="mf">0.5</span>   <span class="c1"># Intrinsic width of the line [A]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F_t</span>      <span class="o">=</span> <span class="mf">1.</span>    <span class="c1"># Total flux of the line</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Defining the quality of the line profile:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PNR_t</span>  <span class="o">=</span> <span class="mf">20.0</span> <span class="c1"># Signal to noise ratio of the maximum of the line.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FWHM_t</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># Full width half maximum diluting the line. Mimics finite resolution. [A]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PIX_t</span>  <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># Wavelength binning of the line. [A]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># Set a numpy random seed.</span>
+</pre></div>
+</div>
+<p>where <cite>/This/Folder/Contains/The/Grids/</cite> is the place where you store the LyaRT data grids, as shown in the installation section.</p>
+<p>Now let’s create an IGM transmission curve. For this example we are going to set the IGM transmission bluer than Lyman-alpha to 0 and for redder than Lyman-alpha to 1.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w_Lya</span> <span class="o">=</span> <span class="mf">1215.68</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w_IGM_rest_Arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span> <span class="n">w_Lya</span><span class="o">-</span><span class="mf">20.0</span> <span class="p">,</span> <span class="n">w_Lya</span><span class="o">+</span><span class="mf">20.0</span> <span class="p">,</span> <span class="mi">1000</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T_IGM_Arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">w_IGM_rest_Arr</span> <span class="p">)</span> <span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T_IGM_Arr</span><span class="p">[</span> <span class="n">w_IGM_rest_Arr</span> <span class="o">&lt;</span> <span class="n">w_Lya</span> <span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>Now let’s generate the observed Lyman-alpha line profile:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w_IGM_Arr</span> <span class="p">,</span> <span class="n">f_IGM_Arr</span> <span class="p">,</span> <span class="n">s_IGM_Arr</span> <span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">Generate_a_real_line</span><span class="p">(</span> <span class="n">z_t</span> <span class="p">,</span> <span class="n">V_t</span><span class="p">,</span> <span class="n">log_N_t</span><span class="p">,</span> <span class="n">t_t</span><span class="p">,</span> <span class="n">F_t</span><span class="p">,</span> <span class="n">log_EW_t</span><span class="p">,</span> <span class="n">W_t</span> <span class="p">,</span> <span class="n">PNR_t</span><span class="p">,</span> <span class="n">FWHM_t</span> <span class="p">,</span> <span class="n">PIX_t</span> <span class="p">,</span> <span class="n">LyaRT_Grid</span><span class="p">,</span> <span class="n">Geometry</span> <span class="p">,</span>  <span class="n">T_IGM_Arr</span><span class="o">=</span><span class="n">T_IGM_Arr</span> <span class="p">,</span> <span class="n">w_IGM_Arr</span><span class="o">=</span><span class="n">w_IGM_rest_Arr</span> <span class="p">,</span> <span class="n">RETURN_ALL</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p><cite>w_IGM_Arr</cite> is a numpy array that contains the wavelength where the line profile is evaluated. Meanwhile, <cite>f_IGM_Arr</cite> is the actual line profile. <cite>s_IGM_Arr</cite> is the uncertainty of the flux density. <cite>info</cite> is a python dictinary that contains a lot of information about how the line was computed, like the ideal line profile, the true IGM escape fraction, etc. Remeber that if you want to use the line profile grid with lower RAM memory occupation you must pass <cite>MODE=’LIGHT’</cite> to <cite>Lya.load_Grid_Line</cite>.</p>
+<p>We can obtain the intrinsic line profile with ideal conditions as…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w_INT_Arr</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span> <span class="s1">&#39;w_obs&#39;</span> <span class="p">]</span> <span class="c1"># wavelength array of the intrinsic line</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f_INT_Arr</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span> <span class="s1">&#39;Intrinsic&#39;</span> <span class="p">]</span> <span class="c1"># flux array of the intrinsic line</span>
+</pre></div>
+</div>
+<p>The true IGM escape fraction is…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;f_IGM_4.0&#39;</span><span class="p">]</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">0.8827655503368276</span>
+</pre></div>
+</div>
+<p>Let’s rescale the lines so that they have a comparable amplitude:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s_IGM_Arr</span> <span class="o">=</span> <span class="n">s_IGM_Arr</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span> <span class="n">f_IGM_Arr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f_IGM_Arr</span> <span class="o">=</span> <span class="n">f_IGM_Arr</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span> <span class="n">f_IGM_Arr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f_INT_Arr</span> <span class="o">=</span> <span class="n">f_INT_Arr</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span> <span class="n">f_INT_Arr</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s have a look to how the line looks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w_IGM_pix_Arr</span>  <span class="p">,</span> <span class="n">f_IGM_pix_Arr</span>  <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">plot_a_rebinned_line</span><span class="p">(</span> <span class="n">w_IGM_Arr</span> <span class="p">,</span> <span class="n">f_IGM_Arr</span> <span class="p">,</span> <span class="n">PIX_t</span> <span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">w_IGM_rest_Arr</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_t</span><span class="p">)</span> <span class="p">,</span> <span class="n">T_IGM_Arr</span> <span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;IGM tranmission&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">w_INT_Arr</span> <span class="p">,</span> <span class="n">f_INT_Arr</span> <span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Intrinsic&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">w_IGM_pix_Arr</span> <span class="p">,</span> <span class="n">f_IGM_pix_Arr</span> <span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;IGM attenuated&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;wavelength[A]&#39;</span> <span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Flux density [a.u.]&#39;</span> <span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span> <span class="p">(</span> <span class="n">w_Lya</span> <span class="o">-</span> <span class="mi">5</span> <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_t</span><span class="p">)</span> <span class="p">,</span> <span class="p">(</span> <span class="n">w_Lya</span> <span class="o">+</span> <span class="mi">5</span> <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_t</span><span class="p">)</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/fig_tutorial_fit_IGM_1.png"><img alt="_images/fig_tutorial_fit_IGM_1.png" src="_images/fig_tutorial_fit_IGM_1.png" style="width: 600px;" /></a>
+<p>Now that we have our mock line profile, let’s fit it. In this example we are going to use <cite>MODE=’IGM-z’</cite>. There are three possible modes: <cite>MODE=’IGM+z’</cite> , <cite>MODE=’IGM-z’</cite> and <cite>MODE=’NoIGM’</cite> . Each of these <cite>MODE</cite> use a differente NN with a different training set. <cite>MODE=’IGM+z’</cite> is trained so that the IGM transmission curves in the training set match the real IGM evolution with redshift. <cite>MODE=’IGM-z’</cite> uses an IGM that is constant with redshift, and therefore it is more unbiased to redshift dependence than <cite>MODE=’IGM+z’</cite>. Note that <cite>MODE=’IGM+z’</cite> should be baised towards reallity. Then, <cite>MODE=’NoIGM’</cite> was trained wihtout the IGM absorption, only the ISM part.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N_ITER</span> <span class="o">=</span> <span class="mi">10000</span> <span class="c1"># Number of times to pertube the line profile</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RESULTS</span> <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">Fit_Observed_line_with_IGM</span><span class="p">(</span> <span class="n">w_IGM_Arr</span> <span class="p">,</span> <span class="n">f_IGM_Arr</span> <span class="p">,</span> <span class="n">s_IGM_Arr</span> <span class="p">,</span> <span class="n">PIX_t</span> <span class="p">,</span> <span class="n">FWHM_t</span> <span class="p">,</span> <span class="n">MODE</span><span class="o">=</span><span class="s1">&#39;IGM-z&#39;</span> <span class="p">,</span> <span class="n">N_ITER</span><span class="o">=</span><span class="n">N_ITER</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>The function <cite>Fit_Observed_line_with_IGM</cite> is used to fit 1 line and it loads the NN and PCA models every time that it is called. This is not a problem if only a handful of lines are fitted at the same time. However, if the user wants to fit many lines, it could be better to load the NN and PCA models outside the function and pass it as an agument. This is done as…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DIC_loaded_models</span> <span class="p">,</span> <span class="n">my_PCA_model</span> <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">Pipieline_Zelda_2_Load_Models</span><span class="p">(</span> <span class="s1">&#39;IGM-z&#39;</span> <span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RESULTS</span> <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">Fit_Observed_line_with_IGM</span><span class="p">(</span> <span class="n">w_IGM_Arr</span> <span class="p">,</span> <span class="n">f_IGM_Arr</span> <span class="p">,</span> <span class="n">s_IGM_Arr</span> <span class="p">,</span> <span class="n">PIX_t</span> <span class="p">,</span> <span class="n">FWHM_t</span> <span class="p">,</span> <span class="n">MODE</span><span class="o">=</span><span class="s1">&#39;IGM-z&#39;</span> <span class="p">,</span> <span class="n">N_ITER</span><span class="o">=</span><span class="n">N_ITER</span> <span class="p">,</span> <span class="n">DIC_loaded_models</span><span class="o">=</span><span class="n">DIC_loaded_models</span> <span class="p">,</span> <span class="n">my_PCA_model</span><span class="o">=</span><span class="n">my_PCA_model</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p><cite>RESULTS</cite> is a python dictionaty that stores all the information of the fit. The percentile 50 is stores as… <cite>x_Q50</cite>, the perntile 16 as <cite>x_Q16</cite>, etc, where <cite>x</cite> is a fitted varible, like redshift, etc. Therefore, the fitted outflow values are</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">z_sol</span>     <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span>    <span class="s1">&#39;z_Q50&#39;</span> <span class="p">]</span> <span class="c1">#redshift</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_V_sol</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span> <span class="s1">&#39;logV_Q50&#39;</span> <span class="p">]</span> <span class="c1"># logarith of expansion velocity.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_N_sol</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span> <span class="s1">&#39;logN_Q50&#39;</span> <span class="p">]</span> <span class="c1"># logarith of neutral hydrogen column density.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_t_sol</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span> <span class="s1">&#39;logt_Q50&#39;</span> <span class="p">]</span> <span class="c1"># logarith of dust optical depth.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_E_sol</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span> <span class="s1">&#39;logE_Q50&#39;</span> <span class="p">]</span> <span class="c1"># logarith of intrinsic equivalent width.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_W_sol</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span> <span class="s1">&#39;logW_Q50&#39;</span> <span class="p">]</span> <span class="c1"># logarith of intrinsic width.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f_ig1_sol</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span>  <span class="s1">&#39;f1A_Q50&#39;</span> <span class="p">]</span> <span class="c1"># IGM Lya escape fraction 1A arround Lya.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f_ig2_sol</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span>  <span class="s1">&#39;f2A_Q50&#39;</span> <span class="p">]</span> <span class="c1"># IGM Lya escape fraction 2A arround Lya.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f_ig4_sol</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span>  <span class="s1">&#39;f4A_Q50&#39;</span> <span class="p">]</span> <span class="c1"># IGM Lya escape fraction 4A arround Lya.</span>
+</pre></div>
+</div>
+<p>Then, the measured IGM Lya escape fraction 4A arround Lya. is…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span> <span class="n">RESULTS</span><span class="p">[</span><span class="s1">&#39;f4A_Q50&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;+-&#39;</span> <span class="p">,</span> <span class="n">RESULTS</span><span class="p">[</span><span class="s1">&#39;f4A_Q84&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">RESULTS</span><span class="p">[</span><span class="s1">&#39;f4A_Q16&#39;</span><span class="p">]</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">0.8047662675380707</span> <span class="o">+-</span> <span class="p">[</span><span class="mf">0.06671568</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>We can compute the solution line profile as…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w_SOL_OBSERVED_Arr</span> <span class="p">,</span> <span class="n">f_SOL_OBSERVED_Arr</span> <span class="p">,</span> <span class="n">s_SOL_OBSERVED_Arr</span> <span class="p">,</span> <span class="n">sol_info</span> <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">Generate_a_real_line</span><span class="p">(</span> <span class="n">z_sol</span> <span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="n">log_V_sol</span> <span class="p">,</span> <span class="n">log_N_sol</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="n">log_t_sol</span><span class="p">,</span> <span class="n">F_t</span><span class="p">,</span> <span class="n">log_E_sol</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="n">log_W_sol</span> <span class="p">,</span> <span class="mf">1000.</span> <span class="p">,</span> <span class="n">FWHM_t</span> <span class="p">,</span> <span class="n">PIX_t</span> <span class="p">,</span> <span class="n">LyaRT_Grid</span><span class="p">,</span> <span class="n">Geometry</span> <span class="p">,</span> <span class="n">RETURN_ALL</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>And we can plot it to compare with the actual intrinsic line profile:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f_SOL_OBSERVED_Arr</span> <span class="o">=</span> <span class="n">f_SOL_OBSERVED_Arr</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">f_SOL_OBSERVED_Arr</span><span class="p">)</span> <span class="c1"># rescaling to be comparable</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w_SOL_OBSERVED_pix_Arr</span>  <span class="p">,</span> <span class="n">f_SOL_OBSERVED_pix_Arr</span>  <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">plot_a_rebinned_line</span><span class="p">(</span> <span class="n">w_SOL_OBSERVED_Arr</span> <span class="p">,</span> <span class="n">f_SOL_OBSERVED_Arr</span> <span class="p">,</span> <span class="n">PIX_t</span> <span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">w_IGM_rest_Arr</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_t</span><span class="p">)</span> <span class="p">,</span> <span class="n">T_IGM_Arr</span> <span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;IGM tranmission&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">w_INT_Arr</span> <span class="p">,</span> <span class="n">f_INT_Arr</span> <span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Intrinsic&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">w_IGM_pix_Arr</span> <span class="p">,</span> <span class="n">f_IGM_pix_Arr</span> <span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;IGM attenuated&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">w_SOL_OBSERVED_pix_Arr</span> <span class="p">,</span> <span class="n">f_SOL_OBSERVED_pix_Arr</span> <span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Reconstruction&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;wavelength[A]&#39;</span> <span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Flux density [a.u.]&#39;</span> <span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span> <span class="p">(</span> <span class="n">w_Lya</span> <span class="o">-</span> <span class="mi">5</span> <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_t</span><span class="p">)</span> <span class="p">,</span> <span class="p">(</span> <span class="n">w_Lya</span> <span class="o">+</span> <span class="mi">5</span> <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_t</span><span class="p">)</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You should get something like:</p>
+<a class="reference internal image-reference" href="_images/fig_tutorial_fit_IGM_2.png"><img alt="_images/fig_tutorial_fit_IGM_2.png" src="_images/fig_tutorial_fit_IGM_2.png" style="width: 600px;" /></a>
+<p><cite>RESULTS</cite> also contains all the chain information for each of the noise perturbations in <cite>RESULTS[‘All’]</cite>. Let’s plot the chains. For that we will use the functions…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_extremes_of_a_prop</span><span class="p">(</span> <span class="n">prop_Arr</span> <span class="p">):</span>
+
+    <span class="n">Q_top</span> <span class="o">=</span> <span class="mf">99.9</span>
+    <span class="n">Q_low</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+    <span class="n">y_prop_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span> <span class="n">prop_Arr</span> <span class="p">,</span> <span class="n">Q_low</span> <span class="p">)</span>
+    <span class="n">y_prop_50</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span> <span class="n">prop_Arr</span> <span class="p">,</span> <span class="mi">50</span> <span class="p">)</span>
+    <span class="n">y_prop_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span> <span class="n">prop_Arr</span> <span class="p">,</span> <span class="n">Q_top</span>  <span class="p">)</span>
+
+    <span class="n">mask_y</span> <span class="o">=</span> <span class="p">(</span> <span class="n">prop_Arr</span> <span class="o">&gt;</span> <span class="n">y_prop_min</span> <span class="p">)</span> <span class="o">*</span> <span class="p">(</span> <span class="n">prop_Arr</span> <span class="o">&lt;</span> <span class="n">y_prop_max</span> <span class="p">)</span>
+
+    <span class="n">y_min</span> <span class="o">=</span> <span class="n">y_prop_50</span> <span class="o">-</span> <span class="mf">4.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span> <span class="n">prop_Arr</span><span class="p">[</span> <span class="n">mask_y</span> <span class="p">]</span> <span class="p">)</span>
+    <span class="n">y_max</span> <span class="o">=</span> <span class="n">y_prop_50</span> <span class="o">+</span> <span class="mf">4.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span> <span class="n">prop_Arr</span><span class="p">[</span> <span class="n">mask_y</span> <span class="p">]</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">y_min</span> <span class="p">,</span> <span class="n">y_max</span>
+
+<span class="k">def</span> <span class="nf">make_corner_plots</span><span class="p">(</span> <span class="n">my_chains_matrix</span> <span class="p">):</span>
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">gaussian_filter1d</span>
+
+    <span class="n">N_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">machine_names</span> <span class="p">)</span>
+    <span class="n">N_pix_smooth</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">NNN_bins</span> <span class="o">=</span> <span class="mi">50</span>
+
+    <span class="n">ax_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">label_list</span> <span class="o">=</span> <span class="n">machine_names</span>
+
+    <span class="n">MAIN_VALUE_mean</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N_dim</span><span class="p">)</span>
+    <span class="n">MAIN_VALUE_median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N_dim</span><span class="p">)</span>
+    <span class="n">MAIN_VALUE_MAX</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N_dim</span><span class="p">)</span>
+    <span class="n">SMOO_VALUE_MAX</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N_dim</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">N_dim</span> <span class="p">):</span>
+
+        <span class="n">x_prop</span> <span class="o">=</span> <span class="n">my_chains_matrix</span><span class="p">[</span> <span class="p">:</span> <span class="p">,</span> <span class="n">i</span> <span class="p">]</span>
+
+        <span class="n">x_prop_min</span> <span class="p">,</span> <span class="n">x_prop_max</span> <span class="o">=</span> <span class="n">get_extremes_of_a_prop</span><span class="p">(</span> <span class="n">x_prop</span> <span class="p">)</span>
+        <span class="n">x_min</span> <span class="o">=</span> <span class="n">x_prop_min</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="n">x_prop_max</span>
+
+        <span class="n">mamamask</span> <span class="o">=</span> <span class="p">(</span> <span class="n">x_prop</span> <span class="o">&gt;</span> <span class="n">x_min</span> <span class="p">)</span> <span class="o">*</span> <span class="p">(</span> <span class="n">x_prop</span> <span class="o">&lt;</span> <span class="n">x_max</span> <span class="p">)</span>
+
+        <span class="n">MAIN_VALUE_mean</span><span class="p">[</span>  <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>       <span class="n">x_prop</span><span class="p">[</span> <span class="n">mamamask</span> <span class="p">]</span> <span class="p">)</span>
+        <span class="n">MAIN_VALUE_median</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span> <span class="n">x_prop</span><span class="p">[</span> <span class="n">mamamask</span> <span class="p">]</span> <span class="p">,</span> <span class="mi">50</span> <span class="p">)</span>
+
+        <span class="n">HH</span> <span class="p">,</span> <span class="n">edges_HH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span> <span class="n">x_prop</span><span class="p">[</span> <span class="n">mamamask</span> <span class="p">]</span> <span class="p">,</span> <span class="n">NNN_bins</span> <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span> <span class="n">x_prop_min</span> <span class="p">,</span> <span class="n">x_prop_max</span> <span class="p">]</span> <span class="p">)</span>
+
+        <span class="n">new_H_Arr</span> <span class="o">=</span> <span class="n">gaussian_filter1d</span><span class="p">(</span> <span class="n">HH</span> <span class="p">,</span> <span class="n">N_pix_smooth</span> <span class="p">)</span>
+
+        <span class="n">center_Arrr</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span> <span class="n">edges_HH</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">edges_HH</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+
+        <span class="n">MAX_prop_smooth</span> <span class="o">=</span> <span class="n">center_Arrr</span><span class="p">[</span> <span class="n">new_H_Arr</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">new_H_Arr</span><span class="p">)</span> <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">SMOO_VALUE_MAX</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">MAX_prop_smooth</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">15</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="n">Q_top</span> <span class="o">=</span> <span class="mf">99.9</span>
+    <span class="n">Q_low</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">N_dim</span> <span class="p">):</span>
+
+        <span class="n">y_prop</span> <span class="o">=</span> <span class="n">my_chains_matrix</span><span class="p">[</span> <span class="p">:</span> <span class="p">,</span> <span class="n">i</span> <span class="p">]</span>
+
+        <span class="n">y_min</span> <span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">get_extremes_of_a_prop</span><span class="p">(</span> <span class="n">y_prop</span> <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">N_dim</span> <span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span> <span class="p">:</span> <span class="k">continue</span>
+
+            <span class="n">x_prop</span> <span class="o">=</span> <span class="n">my_chains_matrix</span><span class="p">[</span> <span class="p">:</span> <span class="p">,</span> <span class="n">j</span> <span class="p">]</span>
+
+            <span class="n">x_min</span> <span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">get_extremes_of_a_prop</span><span class="p">(</span> <span class="n">x_prop</span> <span class="p">)</span>
+
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">(</span> <span class="p">(</span> <span class="n">N_dim</span> <span class="p">,</span> <span class="n">N_dim</span> <span class="p">)</span> <span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>  <span class="p">)</span>
+
+            <span class="n">ax_list</span> <span class="o">+=</span> <span class="p">[</span> <span class="n">ax</span> <span class="p">]</span>
+
+            <span class="n">DDX</span> <span class="o">=</span> <span class="n">x_max</span> <span class="o">-</span> <span class="n">x_min</span>
+            <span class="n">DDY</span> <span class="o">=</span> <span class="n">y_max</span> <span class="o">-</span> <span class="n">y_min</span>
+
+            <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="n">j</span> <span class="p">:</span>
+
+                <span class="n">H</span> <span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span> <span class="n">x_prop</span> <span class="p">,</span> <span class="n">NNN_bins</span> <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">x_min</span><span class="p">,</span><span class="n">x_max</span><span class="p">]</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span> <span class="n">x_prop</span> <span class="p">,</span> <span class="n">NNN_bins</span> <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">x_min</span><span class="p">,</span><span class="n">x_max</span><span class="p">]</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;cornflowerblue&#39;</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="p">[</span> <span class="n">MAIN_VALUE_median</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">,</span> <span class="n">MAIN_VALUE_median</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span> <span class="mf">0.0</span> <span class="p">,</span> <span class="mf">1e10</span> <span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;k--&#39;</span> <span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">H</span><span class="p">)</span> <span class="p">)</span>
+
+                <span class="n">center_Arrr</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+
+                <span class="n">new_H_Arr</span> <span class="o">=</span> <span class="n">gaussian_filter1d</span><span class="p">(</span> <span class="n">H</span> <span class="p">,</span> <span class="n">N_pix_smooth</span> <span class="p">)</span>
+
+                <span class="n">center_Arrr</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">center_Arrr</span> <span class="p">,</span> <span class="n">new_H_Arr</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="p">[</span> <span class="n">SMOO_VALUE_MAX</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">,</span> <span class="n">SMOO_VALUE_MAX</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span> <span class="mf">0.0</span> <span class="p">,</span> <span class="mf">1e10</span> <span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;y--&#39;</span> <span class="p">)</span>
+
+
+            <span class="k">else</span> <span class="p">:</span>
+
+                <span class="n">XX_min</span> <span class="o">=</span> <span class="n">x_min</span> <span class="o">-</span> <span class="n">DDX</span> <span class="o">*</span> <span class="mf">0.2</span>
+                <span class="n">XX_max</span> <span class="o">=</span> <span class="n">x_max</span> <span class="o">+</span> <span class="n">DDX</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+                <span class="n">YY_min</span> <span class="o">=</span> <span class="n">y_min</span> <span class="o">-</span> <span class="n">DDY</span> <span class="o">*</span> <span class="mf">0.2</span>
+                <span class="n">YY_max</span> <span class="o">=</span> <span class="n">y_max</span> <span class="o">+</span> <span class="n">DDY</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+                <span class="n">H</span> <span class="p">,</span> <span class="n">edges_y</span> <span class="p">,</span> <span class="n">edges_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span> <span class="n">x_prop</span> <span class="p">,</span> <span class="n">y_prop</span> <span class="p">,</span> <span class="n">NNN_bins</span> <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[[</span><span class="n">XX_min</span> <span class="p">,</span> <span class="n">XX_max</span><span class="p">],[</span><span class="n">YY_min</span> <span class="p">,</span> <span class="n">YY_max</span><span class="p">]]</span> <span class="p">)</span>
+
+                <span class="n">y_centers</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span> <span class="n">edges_y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">edges_y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+                <span class="n">x_centers</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span> <span class="n">edges_x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">edges_x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+
+                <span class="n">H_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span> <span class="n">H</span> <span class="p">)</span>
+                <span class="n">H_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span> <span class="n">H</span> <span class="p">)</span>
+
+                <span class="n">N_bins</span> <span class="o">=</span> <span class="mi">10000</span>
+
+                <span class="n">H_Arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span> <span class="n">H_min</span> <span class="p">,</span> <span class="n">H_max</span> <span class="p">,</span> <span class="n">N_bins</span> <span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">fact_up_Arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">N_bins</span> <span class="p">)</span>
+
+                <span class="n">TOTAL_H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">H</span> <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">iii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">N_bins</span> <span class="p">):</span>
+
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">H</span> <span class="o">&gt;</span> <span class="n">H_Arr</span><span class="p">[</span><span class="n">iii</span><span class="p">]</span>
+
+                    <span class="n">fact_up_Arr</span><span class="p">[</span><span class="n">iii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">H</span><span class="p">[</span> <span class="n">mask</span> <span class="p">]</span> <span class="p">)</span> <span class="o">/</span> <span class="n">TOTAL_H</span>
+
+                <span class="n">H_value_68</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span> <span class="mf">0.680</span> <span class="p">,</span> <span class="n">fact_up_Arr</span> <span class="p">,</span> <span class="n">H_Arr</span> <span class="p">)</span>
+                <span class="n">H_value_95</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span> <span class="mf">0.950</span> <span class="p">,</span> <span class="n">fact_up_Arr</span> <span class="p">,</span> <span class="n">H_Arr</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span> <span class="n">edges_y</span> <span class="p">,</span> <span class="n">edges_x</span> <span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">T</span> <span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span> <span class="n">y_centers</span><span class="p">,</span> <span class="n">x_centers</span> <span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">T</span> <span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span> <span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span> <span class="n">H_value_95</span> <span class="p">]</span> <span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span> <span class="n">y_centers</span><span class="p">,</span> <span class="n">x_centers</span> <span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">T</span> <span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;r&#39;</span> <span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span> <span class="n">H_value_68</span> <span class="p">]</span> <span class="p">)</span>
+
+                <span class="n">X_VALUE</span> <span class="o">=</span>  <span class="n">MAIN_VALUE_median</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">Y_VALUE</span> <span class="o">=</span>  <span class="n">MAIN_VALUE_median</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="p">[</span> <span class="n">X_VALUE</span> <span class="p">,</span> <span class="n">X_VALUE</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span>    <span class="o">-</span><span class="mi">100</span> <span class="p">,</span>     <span class="mi">100</span> <span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;k--&#39;</span> <span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span> <span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="p">[</span>    <span class="o">-</span><span class="mi">100</span> <span class="p">,</span>     <span class="mi">100</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span> <span class="n">Y_VALUE</span> <span class="p">,</span> <span class="n">Y_VALUE</span> <span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;k--&#39;</span> <span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="p">[</span> <span class="n">SMOO_VALUE_MAX</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">,</span> <span class="n">SMOO_VALUE_MAX</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span>              <span class="o">-</span><span class="mi">100</span> <span class="p">,</span>               <span class="mi">100</span> <span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;y--&#39;</span> <span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="p">[</span>              <span class="o">-</span><span class="mi">100</span> <span class="p">,</span>               <span class="mi">100</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span> <span class="n">SMOO_VALUE_MAX</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">,</span> <span class="n">SMOO_VALUE_MAX</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;y--&#39;</span> <span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span> <span class="n">y_min</span><span class="o">-</span><span class="mf">0.05</span><span class="o">*</span><span class="n">DDY</span> <span class="p">,</span> <span class="n">y_max</span><span class="o">+</span><span class="mf">0.05</span><span class="o">*</span><span class="n">DDY</span> <span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span> <span class="n">x_min</span><span class="o">-</span><span class="mf">0.05</span><span class="o">*</span><span class="n">DDX</span> <span class="p">,</span> <span class="n">x_max</span><span class="o">+</span><span class="mf">0.05</span><span class="o">*</span><span class="n">DDX</span> <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="n">N_dim</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span> <span class="n">label_list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span> <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">j</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span><span class="o">!=</span><span class="mi">0</span> <span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span> <span class="n">label_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span> <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">j</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">(),</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">j</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">(),</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">i</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span> <span class="n">label_list</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span> <span class="n">left</span> <span class="o">=</span> <span class="mf">0.09</span> <span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="mf">0.15</span> <span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="mf">0.98</span> <span class="p">,</span> <span class="n">top</span> <span class="o">=</span> <span class="mf">0.99</span> <span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SMOO_VALUE_MAX</span>
+<span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span>
+<span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span>
+</pre></div>
+</div>
+<p>And we run it like…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">machine_names</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;Dl&#39;</span> <span class="p">,</span> <span class="s1">&#39;logV&#39;</span> <span class="p">,</span> <span class="s1">&#39;logN&#39;</span> <span class="p">,</span><span class="s1">&#39;logt&#39;</span> <span class="p">,</span><span class="s1">&#39;logE&#39;</span> <span class="p">,</span><span class="s1">&#39;logW&#39;</span> <span class="p">,</span><span class="s1">&#39;f1A&#39;</span> <span class="p">,</span><span class="s1">&#39;f2A&#39;</span> <span class="p">,</span> <span class="s1">&#39;f4A&#39;</span> <span class="p">]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHAINS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">RESULTS</span><span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">][</span><span class="s1">&#39;Dl&#39;</span><span class="p">]</span> <span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">machine_names</span><span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">RESULTS</span><span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">][</span><span class="s1">&#39;Dl&#39;</span><span class="p">]</span> <span class="p">)</span> <span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">machine_names</span><span class="p">)</span> <span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">jj</span> <span class="p">,</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span> <span class="n">machine_names</span> <span class="p">)</span> <span class="p">:</span>
+
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">CHAINS</span><span class="p">[</span> <span class="p">:</span> <span class="p">,</span> <span class="n">jj</span> <span class="p">]</span> <span class="o">=</span> <span class="n">RESULTS</span><span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">][</span> <span class="n">prop_name</span> <span class="p">]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SMOO_VALUE_MAX</span> <span class="o">=</span> <span class="n">make_corner_plots</span><span class="p">(</span> <span class="n">CHAINS</span> <span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span> <span class="s1">&#39;fig_tutorial_fit_IGM_3.png&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You should get something line this…</p>
+<a class="reference internal image-reference" href="_images/fig_tutorial_fit_IGM_3.png"><img alt="_images/fig_tutorial_fit_IGM_3.png" src="_images/fig_tutorial_fit_IGM_3.png" style="width: 600px;" /></a>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Tutorial_mock.html" class="btn btn-neutral float-left" title="Tutorial : Computing mock line profiles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Tutorial_MCMC.html" class="btn btn-neutral float-right" title="Tutorial : Fitting a line profile using Monte Carlo Markov Chains" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Gurung-Lopez, Siddhartha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-Tutorial : Computing Lyman-alpha escape fractions
+Tutorial : Computing interestellar medium Lyman-alpha escape fractions
 =================================================
 
 In this tutorial you will, hopefully, learn how to compute Lyman-alpha escape fractions with `zELDA`. Note that this part of the code compres directly from `FLaREON` ( https://github.com/sidgurun/FLaREON , Gurung-lopez et al. 2019b).
