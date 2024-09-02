@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; zELDA 0.0.01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=10ae0503"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="About the LyaRT data grids" href="About_the_data_grids.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            zELDA
+              <img src="_static/fig_log_DOUBLE_COOL_SHELL_EDGE_r_0.8_s_40_WHITE_True.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python-package">Python package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lyart-data-grids">LyaRT data grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#partial-installation-for-testing">Partial installation for testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="About_the_data_grids.html">About the LyaRT data grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_ideal.html">Tutorial : Computing ideal line profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_mock.html">Tutorial : Computing mock line profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_DNN.html">Tutorial : Fitting a line profile using deep learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_Train.html">Tutorial : Train your own neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_MCMC.html">Tutorial : Fitting a line profile using Monte Carlo Markov Chains</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial_fesc.html">Tutorial : Computing Lyman-alpha escape fractions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funcs.html">funcs module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">zELDA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<span id="target-installation"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<p><cite>zELDA</cite>, installation is divided in two blocks. First you will need to install the python package containing all the scritps. With this you can already use the Deep Neural Network methodologies to extract information from observed Lyman-alpha line profiles. The second block contains all the grids computed from <cite>LyaRT</cite>. These are necessary in order to compute line profiles and escape fractions for all the outflow geometries. As a consequence, the second block is mandatory to make MCMC analysis.</p>
+<section id="python-package">
+<h2>Python package<a class="headerlink" href="#python-package" title="Permalink to this heading"></a></h2>
+<p>The simplest way of installing <cite>zELDA</cite>’s scripts is via pip:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>$ pip install Lya_zelda
+</pre></div>
+</div>
+<p>An alternative method to install <cite>zELDA</cite>’scripts is downloading the code from GitHub:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/sidgurun/Lya_zelda.git
+$ cd Lya_zelda
+$ pip install .
+</pre></div>
+</div>
+<p>Remember that you can also add the tag <code class="docutils literal notranslate"><span class="pre">--user</span></code> ,  if necessary.</p>
+<p><cite>zELDA</cite> uses a specific version of <cite>numpy</cite> and <cite>sci-kit-learn</cite>. This means that most likely <cite>pip</cite> will try to change to those versions when you install <cite>zELDA</cite>. If you want to avoid this you can create a virtual environment, which is always useful to tests installations.</p>
+</section>
+<section id="lyart-data-grids">
+<h2>LyaRT data grids<a class="headerlink" href="#lyart-data-grids" title="Permalink to this heading"></a></h2>
+<p>Next, let’s download the data grids necessary for generating mock Lyman-alpha line profiles as escape fractions. The data is stored at <a class="reference external" href="https://zenodo.org/record/4733518#.YJjw_y_Wf0c">https://zenodo.org/record/4733518#.YJjw_y_Wf0c</a> . Download the <cite>Grids.zip</cite> file. You can do this in different ways. The recomended method is using the commamnd <cite>wget</cite> or <cite>curl</cite>, which should be more stable. For example, for downloawing it with <cite>curl</cite>, you can do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>$ curl --cookie zenodo-cookies.txt &quot;https://zenodo.org/record/4733518/files/Grids.zip?download=1&quot; --output Grids.zip
+</pre></div>
+</div>
+<p>The download might take a while, as it is about 13Gb, so grab your fauvorite snack and be patient =D .</p>
+<p>Other way of getting the data is going to the <cite>zenodo</cite>  webpage and download it through your internet borwser. As this is a large file, if you brower is a little bit unstable the download might stop in halfway, causing you to restart the download again.</p>
+<p>Once you have the <cite>Grids.zip</cite> file, unzip it in the place that you want to keep it.</p>
+<p>In order to compute line profiles and escape fraction you will need to indicate <cite>zELDA</cite> the location of grids by doing</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">Lya_zelda</span> <span class="k">as</span> <span class="nn">Lya</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">your_grids_location</span> <span class="o">=</span> <span class="s1">&#39;/This/Folder/Contains/The/Grids/&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Lya</span><span class="o">.</span><span class="n">funcs</span><span class="o">.</span><span class="n">Data_location</span> <span class="o">=</span> <span class="n">your_grids_location</span>
+</pre></div>
+</div>
+<p>where <cite>your_grids_location</cite> is a <cite>string</cite> with the place where you have stored the grids. If you run the <cite>ls</cite> command you should see something like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>$ ls /This/Folder/Contains/The/Grids/
+
+Dictonary_Bicone_X_Slab_Grid_Lines_In_Bicone_False.npy
+.
+.
+.
+GRID_data__V_29_logNH_19_logta_9_EW_20_Wi_31.npy
+GRID_data__V_29_logNH_19_logta_9_EW_8_Wi_9.npy
+GRID_info__V_29_logNH_19_logta_9_EW_20_Wi_31.npy
+GRID_info__V_29_logNH_19_logta_9_EW_8_Wi_9.npy
+.
+.
+.
+finalized_model_wind_f_esc_Tree_f_esc.sav
+</pre></div>
+</div>
+<p>You can check if you have set properly the directoy by loading a grid after setting <cite>Lya.funcs.Data_location</cite>, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span> <span class="n">Lya</span><span class="o">.</span><span class="n">Check_if_DATA_files_are_found</span><span class="p">()</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>If the location has been properly set the command should return 1. If the data files are not found, then 0 is return. This function will also tell you the current value of <cite>Lya.funcs.Data_location</cite>. If the funtions returns 0 make sure than running <cite>ls</cite> gives you the expected output (see just above).</p>
+</section>
+<section id="partial-installation-for-testing">
+<h2>Partial installation for testing<a class="headerlink" href="#partial-installation-for-testing" title="Permalink to this heading"></a></h2>
+<p>This section is optional and not required for the full installation. If you have done the previous steps you don’t need to go through this.</p>
+<p>The full <cite>zELDA</cite> (grids+code) is about 13GB of storage. There could be the case in which you might want to test the code but not install it completely. If this is the case, you can download a lighter version of the grid for the Thin Shell geoemtry used to fit observed data. Remember that once you have installed the scripts by pip (above), you can already make the neural network analysis of the line profiles, there is no need of the line profiles grids. However, if you want to plot the line profile given by the predicted outflow propeties you will need the grid of line profiles.</p>
+<p>Go to the location where you want to store the test grids. You can download the lighter version of the grids with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>$ curl -0 --output GRID_data__V_29_logNH_19_logta_9_EW_8_Wi_9.npy  https://zenodo.org/record/4890276/files/GRID_data__V_29_logNH_19_logta_9_EW_8_Wi_9.npy
+$ curl -0 --output GRID_info__V_29_logNH_19_logta_9_EW_8_Wi_9.npy  https://zenodo.org/record/4890276/files/GRID_info__V_29_logNH_19_logta_9_EW_8_Wi_9.npy
+</pre></div>
+</div>
+<p>Done! This files should be less than 2GB.</p>
+<p>Let’s see how you can load them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">Lya_zelda</span> <span class="k">as</span> <span class="nn">Lya</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">your_grids_location</span> <span class="o">=</span> <span class="s1">&#39;/This/Folder/Contains/The/Grids/&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Lya</span><span class="o">.</span><span class="n">funcs</span><span class="o">.</span><span class="n">Data_location</span> <span class="o">=</span> <span class="n">your_grids_location</span>
+</pre></div>
+</div>
+<p>where <cite>your_grids_location</cite> is a <cite>string</cite> with the place where you have stored the grids. If you run the <cite>ls</cite> command you should see something like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>$ ls /This/Folder/Contains/The/Grids/
+GRID_data__V_29_logNH_19_logta_9_EW_8_Wi_9.npy
+GRID_info__V_29_logNH_19_logta_9_EW_8_Wi_9.npy
+</pre></div>
+</div>
+<p>You can check if you have set properly the directoy by loading a grid after setting <cite>Lya.funcs.Data_location</cite>, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Geometry</span> <span class="o">=</span> <span class="s1">&#39;Thin_Shell_Cont&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">LyaRT_Grid</span> <span class="o">=</span> <span class="n">Lya</span><span class="o">.</span><span class="n">load_Grid_Line</span><span class="p">(</span> <span class="n">Geometry</span> <span class="p">,</span> <span class="n">MODE</span><span class="o">=</span><span class="s1">&#39;LIGHT&#39;</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>If this last command worked, then the grids were found correctly and you can start using this line profile grid to test the creation of mock line profiles, for example. However, you won’t be able to compute escape fractions and the line profile for the other gas geometries until you install the full package. Also, the grid you have just downlaoded is less heavy because there are fewer bins, which means that the nodes are more spaced. This means that the line profiles computed from this grid will have in general a lower accuracy in comparison with using the full grid. Therefore, for science you sould use the full grid, not this one.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="About_the_data_grids.html" class="btn btn-neutral float-right" title="About the LyaRT data grids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Gurung-Lopez, Siddhartha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
