@@ -18,6 +18,7 @@ zELDA's documentation v0.0
    About_the_data_grids
    Tutorial_ideal
    Tutorial_mock
+   Tutorial_NN_IGM
    Tutorial_MCMC
    Tutorial_fesc
    funcs
