@@ -12,21 +12,21 @@ However, `zELDA` implements several gas geometries and is optimized to obtain la
 
 .. code:: python
 
-          >>> import Lya_zelda as Lya
-          >>> your_grids_location = '/This/Folder/Contains/The/Grids/'
-          >>> Lya.funcs.Data_location = your_grids_location
+          import Lya_zelda as Lya
+          your_grids_location = '/This/Folder/Contains/The/Grids/'
+          Lya.funcs.Data_location = your_grids_location
 
-          >>> Geometry = 'Thin_Shell' 
-          >>> # Other options: 'Galactic Wind' or 'Bicone_X_Slab_In' or 'Bicone_X_Slab_Out'
+          Geometry = 'Thin_Shell' 
+          # Other options: 'Galactic Wind' or 'Bicone_X_Slab_In' or 'Bicone_X_Slab_Out'
 
-          >>> # Expansion velocity array in km/s
-          >>> V_Arr     = [  200 ,  300 , 400   ] 
+          # Expansion velocity array in km/s
+          V_Arr     = [  200 ,  300 , 400   ] 
 
-          >>> # Logarithmic of column densities array in cm**-2
-          >>> logNH_Arr = [ 19.5 , 20.0 , 20.5  ] 
+          # Logarithmic of column densities array in cm**-2
+          logNH_Arr = [ 19.5 , 20.0 , 20.5  ] 
 
-          >>> # Dust optical depth Array
-          >>> ta_Arr    = [  0.1 , 0.01 , 0.001 ] 
+          # Dust optical depth Array
+          ta_Arr    = [  0.1 , 0.01 , 0.001 ] 
 
 Where `Geometry` indicates the gas distribution that is being used. 'Bicone_X_Slab_In' indicates the bicone geometry look through the outflow, while 'Bicone_X_Slab_In' is looking through the optically thick gas. The 'Thin_Shell_Cont' model does not support escape fractions yet.  
 
@@ -34,7 +34,7 @@ Now let's compute the escape fraction for this configurations:
 
 .. code:: python
 
-          >>> f_esc_Arr = Lya.RT_f_esc( Geometry , V_Arr , logNH_Arr , ta_Arr )
+          f_esc_Arr = Lya.RT_f_esc( Geometry , V_Arr , logNH_Arr , ta_Arr )
 
 The variable `f_esc_Arr` is an Array of 1 dimension and length 3 that encloses the escape fractions for the configurations. In particular `f_esc_Arr[i]` is computed     using `V_Arr[i]` ,  `logNH_Arr[i]` and `ta_Arr[i]`.
 

@@ -10,28 +10,28 @@ Let's start by loading `zELDA` creating a mock line profile that we will fit lat
 
 .. code:: python
 
-          >>> import Lya_zelda as Lya
-          >>> your_grids_location = '/This/Folder/Contains/The/Grids/'
-          >>> Lya.funcs.Data_location = your_grids_location
+          import Lya_zelda as Lya
+          your_grids_location = '/This/Folder/Contains/The/Grids/'
+          Lya.funcs.Data_location = your_grids_location
 
-          >>> Geometry = 'Thin_Shell_Cont'
-          >>> LyaRT_Grid = Lya.load_Grid_Line( Geometry )
+          Geometry = 'Thin_Shell_Cont'
+          LyaRT_Grid = Lya.load_Grid_Line( Geometry )
 
-          >>> # Defining the model parameters:
-          >>> z_t      = 0.5   # redshift of the source
-          >>> V_t      = 40.0  # Outflow expansion velocity [km/s]
-          >>> log_N_t  = 20.   # Logarithmic of the neutral hydrogen column density [cm**-2]
-          >>> t_t      = 0.01  # Dust optical depth
-          >>> log_EW_t = 1.5   # Logarithmic the intrinsic equivalent width [A]
-          >>> W_t      = 0.5   # Intrinsic width of the line [A]
-          >>> F_t      = 1.    # Total flux of the line
+          # Defining the model parameters:
+          z_t      = 0.5   # redshift of the source
+          V_t      = 40.0  # Outflow expansion velocity [km/s]
+          log_N_t  = 20.   # Logarithmic of the neutral hydrogen column density [cm**-2]
+          t_t      = 0.01  # Dust optical depth
+          log_EW_t = 1.5   # Logarithmic the intrinsic equivalent width [A]
+          W_t      = 0.5   # Intrinsic width of the line [A]
+          F_t      = 1.    # Total flux of the line
 
-          >>> # Defining the quality of the line profile:
-          >>> PNR_t  = 15.0 # Signal to noise ratio of the maximum of the line.
-          >>> FWHM_t = 0.2  # Full width half maximum diluting the line. Mimics finite resolution. [A]
-          >>> PIX_t  = 0.1  # Wavelength binning of the line. [A]
+          # Defining the quality of the line profile:
+          PNR_t  = 15.0 # Signal to noise ratio of the maximum of the line.
+          FWHM_t = 0.2  # Full width half maximum diluting the line. Mimics finite resolution. [A]
+          PIX_t  = 0.1  # Wavelength binning of the line. [A]
 
-          >>> w_Arr , f_Arr , s_Arr = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, LyaRT_Grid, Geometry )
+          w_Arr , f_Arr , s_Arr = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, LyaRT_Grid, Geometry )
 
 where `/This/Folder/Contains/The/Grids/` is the place where you store the LyaRT data grids, as shown in the installation section. And... It's done! `w_Arr` is a numpy array that contains the wavelength where the line profile is evaluated. Meanwhile, `f_Arr` is the actual line profile. `s_Arr` is the uncertainty of the flux density. Remeber that if you want to use the line profile grid with lower RAM memory occupation you must pass `MODE='LIGHT'` to `Lya.load_Grid_Line`.
 
@@ -39,16 +39,16 @@ Let's have a look to how the line looks:
 
 .. code:: python
 
-          >>> w_Arr , f_Arr , s_Arr  = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, LyaRT_Grid, Geometry )
+          w_Arr , f_Arr , s_Arr  = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, LyaRT_Grid, Geometry )
 
-          >>> w_pix_Arr , f_pix_Arr = Lya.plot_a_rebinned_line( w_Arr , f_Arr , PIX_t )
+          w_pix_Arr , f_pix_Arr = Lya.plot_a_rebinned_line( w_Arr , f_Arr , PIX_t )
 
-          >>> import pylab as plt
-          >>> plt.plot( w_pix_Arr , f_pix_Arr )
-          >>> plt.xlabel('wavelength[A]' , size=15 )
-          >>> plt.ylabel('Flux density [a.u.]' , size=15 )
-          >>> plt.xlim(1815,1835)
-          >>> plt.show()
+          import pylab as plt
+          plt.plot( w_pix_Arr , f_pix_Arr )
+          plt.xlabel('wavelength[A]' , size=15 )
+          plt.ylabel('Flux density [a.u.]' , size=15 )
+          plt.xlim(1815,1835)
+          plt.show()
 
 .. image:: figs_and_codes/fig_Tutorial_4_1.png
    :width: 600
@@ -60,15 +60,15 @@ Let's now set the configuration for the MCMC analysis.
 
 .. code:: python
 
-          >>> N_walkers = 200 # Number of walkers
-          >>> N_burn    = 200 # Number of steps to burn-in
-          >>> N_steps   = 300 # Number of steps to run after burning-in
+          N_walkers = 200 # Number of walkers
+          N_burn    = 200 # Number of steps to burn-in
+          N_steps   = 300 # Number of steps to run after burning-in
 
 Now let's choose the method to initialize the walkers. There are basically two methods: using the deep neural network or doing a fast particle swarm optimization (PSO). For this tutorial we will use the deep neural network.
 
 .. code:: python
 
-          >>> MODE = 'DNN'
+          MODE = 'DNN'
 
 If you want to use instead the PSO you can set `MODE = 'PSO'`. 
 
@@ -76,7 +76,7 @@ Now let's get the regions where we want to originally spawn our lovely walkers:
 
 .. code:: python
 
-          >>> log_V_in , log_N_in , log_t_in , log_E_in , W_in , z_in , Best = Lya.MCMC_get_region_6D( MODE , w_Arr , f_Arr , s_Arr , FWHM_t , PIX_t , LyaRT_Grid , Geometry )
+          log_V_in , log_N_in , log_t_in , log_E_in , W_in , z_in , Best = Lya.MCMC_get_region_6D( MODE , w_Arr , f_Arr , s_Arr , FWHM_t , PIX_t , LyaRT_Grid , Geometry )
 
 The variables `log_V_in`, `log_N_in`, `log_t_in`, `log_E_in`, `W_in` and `z_in` are python lists of two elements containing the range where to spawn the walkers for the logarithmic of the bulk velocity, the logarithmic of the HI column density, the logarithmic of the dust optical, the logarithmic of the intrinsic equivalent width, the intrinsic width of the line and the redshift. For example, `z_in[0]` contains the minimum redshift and `z_in[0]` the maximum. Actually this step is not necessary and if you want you can continue without defining these variables or setting them as you please. Also, remember that these list only maker where the walkers are spawned. They might actually get outside this volume if the best fitting region is outside.
 
@@ -84,7 +84,7 @@ Let's now run the MCMC:
 
 .. code:: python
 
-          >>> sampler = Lya.MCMC_Analysis_sampler_5( w_Arr , f_Arr , s_Arr , FWHM_t , N_walkers , N_burn , N_steps , Geometry , LyaRT_Grid , z_in=z_in , log_V_in=log_V_in , log_N_in=log_N_in , log_t_in=log_t_in , log_E_in=log_E_in , W_in=W_in )
+          sampler = Lya.MCMC_Analysis_sampler_5( w_Arr , f_Arr , s_Arr , FWHM_t , N_walkers , N_burn , N_steps , Geometry , LyaRT_Grid , z_in=z_in , log_V_in=log_V_in , log_N_in=log_N_in , log_t_in=log_t_in , log_E_in=log_E_in , W_in=W_in )
 
 `sampler` is an object of the python package `emcee`. Note that there is a way of forcing the redshift to be inside `z_in`. We decided to this with only this property in case you know the redshift of the source before hand. you can do this by passing `FORCE_z=True` to `Lya.MCMC_Analysis_sampler_5`.
 
@@ -92,54 +92,54 @@ Now let's get the actual value of the predicted properties and their 1-sigma unc
 
 .. code:: python
 
-          >>> Q_Arr = [ 16 , 50 , 84 ] # You can add more percentiles here, like 95
+          Q_Arr = [ 16 , 50 , 84 ] # You can add more percentiles here, like 95
           
-          >>> perc_matrix_sol , flat_samples = Lya.get_solutions_from_sampler( sampler , N_walkers , N_burn , N_steps , Q_Arr )
+          perc_matrix_sol , flat_samples = Lya.get_solutions_from_sampler( sampler , N_walkers , N_burn , N_steps , Q_Arr )
 
 `flat_samples` contains the MCMC chains flatten. `perc_matrix_sol` is a 2-D array with dimensions `6xlen(Q_Arr)` containing the percentiles of the variables. You can extract the values doing something like:
 
 .. code:: python
 
-          >>> # redshift.
-          >>> z_16     =     perc_matrix_sol[ 3 , 0 ] # corresponds to Q_Arr[0]
-          >>> z_50     =     perc_matrix_sol[ 3 , 1 ] # corresponds to Q_Arr[1]
-          >>> z_84     =     perc_matrix_sol[ 3 , 2 ] # corresponds to Q_Arr[2]
+          # redshift.
+          z_16     =     perc_matrix_sol[ 3 , 0 ] # corresponds to Q_Arr[0]
+          z_50     =     perc_matrix_sol[ 3 , 1 ] # corresponds to Q_Arr[1]
+          z_84     =     perc_matrix_sol[ 3 , 2 ] # corresponds to Q_Arr[2]
 
-          >>> # Expansion velocity.
-          >>> V_16     = 10**perc_matrix_sol[ 0 , 0 ]
-          >>> V_50     = 10**perc_matrix_sol[ 0 , 1 ]
-          >>> V_84     = 10**perc_matrix_sol[ 0 , 2 ]
+          # Expansion velocity.
+          V_16     = 10**perc_matrix_sol[ 0 , 0 ]
+          V_50     = 10**perc_matrix_sol[ 0 , 1 ]
+          V_84     = 10**perc_matrix_sol[ 0 , 2 ]
 
-          >>> # dust optical depth. 
-          >>> t_16     = 10**perc_matrix_sol[ 2 , 0 ]
-          >>> t_50     = 10**perc_matrix_sol[ 2 , 1 ]
-          >>> t_84     = 10**perc_matrix_sol[ 2 , 2 ]
+          # dust optical depth. 
+          t_16     = 10**perc_matrix_sol[ 2 , 0 ]
+          t_50     = 10**perc_matrix_sol[ 2 , 1 ]
+          t_84     = 10**perc_matrix_sol[ 2 , 2 ]
 
-          >>> # Intrinsic width.
-          >>> W_16     =     perc_matrix_sol[ 5 , 0 ]
-          >>> W_50     =     perc_matrix_sol[ 5 , 1 ]
-          >>> W_84     =     perc_matrix_sol[ 5 , 2 ]
+          # Intrinsic width.
+          W_16     =     perc_matrix_sol[ 5 , 0 ]
+          W_50     =     perc_matrix_sol[ 5 , 1 ]
+          W_84     =     perc_matrix_sol[ 5 , 2 ]
 
-          >>> # Logarithmic of the intrinsic equivalent width.
-          >>> log_E_16 =     perc_matrix_sol[ 4 , 0 ]
-          >>> log_E_50 =     perc_matrix_sol[ 4 , 1 ]
-          >>> log_E_84 =     perc_matrix_sol[ 4 , 2 ]
+          # Logarithmic of the intrinsic equivalent width.
+          log_E_16 =     perc_matrix_sol[ 4 , 0 ]
+          log_E_50 =     perc_matrix_sol[ 4 , 1 ]
+          log_E_84 =     perc_matrix_sol[ 4 , 2 ]
 
-          >>> # Logarithmic of the HI column density.
-          >>> log_N_16 =     perc_matrix_sol[ 1 , 0 ]
-          >>> log_N_50 =     perc_matrix_sol[ 1 , 1 ]
-          >>> log_N_84 =     perc_matrix_sol[ 1 , 2 ]
+          # Logarithmic of the HI column density.
+          log_N_16 =     perc_matrix_sol[ 1 , 0 ]
+          log_N_50 =     perc_matrix_sol[ 1 , 1 ]
+          log_N_84 =     perc_matrix_sol[ 1 , 2 ]
 
 Let's compare the MCMC prediction with the actual input:
 
 .. code:: python
 
-          >>> print( 'The true redshift                 is' , z_t      , 'and the predicted is' , z_50     , '(-' , z_50-z_16         , ', +' , z_84-z_50         , ')' )
-          >>> print( 'The true expansion velocity       is' , V_t      , 'and the predicted is' , V_50     , '(-' , V_50-V_16         , ', +' , V_84-V_50         , ')' )
-          >>> print( 'The true dust optical depth       is' , t_t      , 'and the predicted is' , t_50     , '(-' , t_50-t_16         , ', +' , t_84-t_50         , ')' )
-          >>> print( 'The true intrinsic width          is' , W_t      , 'and the predicted is' , W_50     , '(-' , W_50-W_16         , ', +' , W_84-W_50         , ')' )
-          >>> print( 'The true log of HI column density is' , log_N_t  , 'and the predicted is' , log_N_50 , '(-' , log_N_50-log_N_16 , ', +' , log_N_84-log_N_50 , ')' )
-          >>> print( 'The true log of equivalent width  is' , log_EW_t , 'and the predicted is' , log_E_50 , '(-' , log_E_50-log_E_16 , ', +' , log_E_84-log_E_50 , ')' )
+          print( 'The true redshift                 is' , z_t      , 'and the predicted is' , z_50     , '(-' , z_50-z_16         , ', +' , z_84-z_50         , ')' )
+          print( 'The true expansion velocity       is' , V_t      , 'and the predicted is' , V_50     , '(-' , V_50-V_16         , ', +' , V_84-V_50         , ')' )
+          print( 'The true dust optical depth       is' , t_t      , 'and the predicted is' , t_50     , '(-' , t_50-t_16         , ', +' , t_84-t_50         , ')' )
+          print( 'The true intrinsic width          is' , W_t      , 'and the predicted is' , W_50     , '(-' , W_50-W_16         , ', +' , W_84-W_50         , ')' )
+          print( 'The true log of HI column density is' , log_N_t  , 'and the predicted is' , log_N_50 , '(-' , log_N_50-log_N_16 , ', +' , log_N_84-log_N_50 , ')' )
+          print( 'The true log of equivalent width  is' , log_EW_t , 'and the predicted is' , log_E_50 , '(-' , log_E_50-log_E_16 , ', +' , log_E_84-log_E_50 , ')' )
           
 which should look something like:
 
@@ -157,24 +157,24 @@ Now let's plot the lines and see how they compare:
 
 .. code:: python
 
-          >>> # Infinite signal to noise in the model
-          >>> PNR = 100000. 
+          # Infinite signal to noise in the model
+          PNR = 100000. 
 
-          >>> # Compute line
-          >>> w_One_Arr , f_One_Arr , _  = Lya.Generate_a_real_line( z_50, V_50, log_N_50, t_50, F_t, log_E_50, W_50, PNR, FWHM_t, PIX_t, LyaRT_Grid, Geometry )
+          # Compute line
+          w_One_Arr , f_One_Arr , _  = Lya.Generate_a_real_line( z_50, V_50, log_N_50, t_50, F_t, log_E_50, W_50, PNR, FWHM_t, PIX_t, LyaRT_Grid, Geometry )
 
-          >>> # Make cooler 
-          >>> w_pix_One_Arr , f_pix_One_Arr = Lya.plot_a_rebinned_line( w_One_Arr , f_One_Arr , PIX_t )
+          # Make cooler 
+          w_pix_One_Arr , f_pix_One_Arr = Lya.plot_a_rebinned_line( w_One_Arr , f_One_Arr , PIX_t )
 
-          >>> # Plot
-          >>> plt.plot( w_pix_Arr     , f_pix_Arr     , label='Target' )
-          >>> plt.plot( w_pix_One_Arr , f_pix_One_Arr , label='MCMC'   )
-          >>> 
-          >>> plt.legend(loc=0)
-          >>> plt.xlabel('wavelength[A]' , size=15 )
-          >>> plt.ylabel('Flux density [a.u.]' , size=15 )
-          >>> plt.xlim(1815,1835)
-          >>> plt.show()
+          # Plot
+          plt.plot( w_pix_Arr     , f_pix_Arr     , label='Target' )
+          plt.plot( w_pix_One_Arr , f_pix_One_Arr , label='MCMC'   )
+          
+          plt.legend(loc=0)
+          plt.xlabel('wavelength[A]' , size=15 )
+          plt.ylabel('Flux density [a.u.]' , size=15 )
+          plt.xlim(1815,1835)
+          plt.show()
 
 This should give you something like this:
 
