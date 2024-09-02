@@ -1,4 +1,0 @@
-scipy
-emcee
-sklearn
-pyswarms
