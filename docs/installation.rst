@@ -22,7 +22,7 @@ An alternative method to install `zELDA`'scripts is downloading the code from Gi
 .. code:: python
 
           $ git clone https://github.com/sidgurun/Lya_zelda.git
-          $ cd Lya_zelda
+          $ cd zELDA_II
           $ pip install .
 
 Remember that you can also add the tag ``--user`` ,  if necessary.
