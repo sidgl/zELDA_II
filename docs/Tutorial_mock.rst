@@ -10,7 +10,7 @@ Let's start by loading `zELDA` and setting the location of the LyaRT grids:
 
 .. code:: python
 
-          import Lya_zelda as Lya
+          import Lya_zelda_II as Lya
 
           your_grids_location = '/This/Folder/Contains/The/Grids/'
 
@@ -48,9 +48,9 @@ Now let's set the quality of the line profile:
 
 .. code:: python
 
-          PNR_t  = 10.0 # Signal to noise ratio of the maximum of the line.
-          FWHM_t = 0.5  # Full width half maximum diluting the line. Mimics finite resolution. [A]
-          PIX_t  = 0.2  # Wavelength binning of the line. [A]
+          PNR_t  = 20.0 # Signal to noise ratio of the maximum of the line.
+          FWHM_t = 0.2  # Full width half maximum diluting the line. Mimics finite resolution. [A]
+          PIX_t  = 0.1  # Wavelength binning of the line. [A]
 
 Now he have everything, let's compute the line simply by doing:
 
@@ -76,6 +76,41 @@ This should show something like this
 .. image:: figs_and_codes/fig_Tutorial_2_1.png
    :width: 600
 
+Now let's create an IGM transmission curve. This is a simple toy model. For this example we are going to set the IGM transmission bluer than Lyman-alpha to 0.3 and for redder than Lyman-alpha to 1.
+
+.. code:: python
+
+          w_Lya = 1215.68
+          w_IGM_rest_Arr = np.linspace( w_Lya-20.0 , w_Lya+20.0 , 1000 )
+          T_IGM_Arr = np.ones( len( w_IGM_rest_Arr ) )
+
+          T_IGM_Arr[ w_IGM_rest_Arr < w_Lya ] = 0.3
+
+Now let's generate the IGM attenuated line
+
+.. code:: python
+
+    w_IGM_Arr , f_IGM_Arr , _ = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, LyaRT_Grid, Geometry , T_IGM_Arr=T_IGM    _Arr , w_IGM_Arr=w_IGM_rest_Arr )
+
+and this is how they look
+
+.. code:: python
+
+    f_Arr     = f_Arr     *1. / np.amax( f_Arr     )
+    f_IGM_Arr = f_IGM_Arr *1. / np.amax( f_IGM_Arr )
+
+    plt.plot( w_Arr     , f_Arr     , label='No IGM' )
+    plt.plot( w_IGM_Arr , f_IGM_Arr , label='IGM' )
+    plt.plot( w_IGM_rest_Arr * (1+z_t) , T_IGM_Arr , label='IGM transmission' )
+    plt.legend( loc=0 )
+    plt.xlabel('wavelength[A]' , size=15 )
+    plt.ylabel('Flux density [a.u.]' , size=15 )
+    plt.xlim(1815,1835)
+    plt.show()
+
+.. image:: figs_and_codes/fig_Tutorial_2_2.png
+   :width: 600
+
 Plotting cooler line profiles
 *****************************
 
@@ -83,14 +118,16 @@ If you want a cooler and more 'accurate' plot of the line profile you can use:
 
 .. code:: python
 
-          w_pix_Arr , f_pix_Arr = Lya.plot_a_rebinned_line( w_Arr , f_Arr , PIX_t )
+          w_INT_pix_Arr , f_INT_pix_Arr = Lya.plot_a_rebinned_line( w_Arr , f_Arr , PIX_t )
+          w_IGM_pix_Arr , f_IGM_pix_Arr = Lya.plot_a_rebinned_line( w_IGM_Arr , f_IGM_Arr , PIX_t )
+
           plt.plot( w_pix_Arr , f_pix_Arr )
           plt.xlabel('wavelength[A]' , size=15 )
           plt.ylabel('Flux density [a.u.]' , size=15 )
           plt.xlim(1815,1835)
           plt.show()
 
-.. image:: figs_and_codes/fig_Tutorial_2_2.png
+.. image:: figs_and_codes/fig_Tutorial_2_3.png
    :width: 600
 
 `Lya.plot_a_rebinned_line` is just a function that returns the line profile and wavelength array in a cool way to plot them. You probably shouldn't use for science the output of `Lya.plot_a_rebinned_line`, just for plotting. 

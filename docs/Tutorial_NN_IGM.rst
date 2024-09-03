@@ -37,7 +37,7 @@ Let's start by loading `zELDA` creating a mock line profile that we will fit lat
 
 where `/This/Folder/Contains/The/Grids/` is the place where you store the LyaRT data grids, as shown in the installation section. 
 
-Now let's create an IGM transmission curve. For this example we are going to set the IGM transmission bluer than Lyman-alpha to 0 and for redder than Lyman-alpha to 1.
+Now let's create an IGM transmission curve. This is a simple toy model. For this example we are going to set the IGM transmission bluer than Lyman-alpha to 0 and for redder than Lyman-alpha to 1.
 
 .. code:: python
 
@@ -117,7 +117,7 @@ The function `Fit_Observed_line_with_IGM` is used to fit 1 line and it loads the
 
           RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER , DIC_loaded_models=DIC_loaded_models , my_PCA_model=my_PCA_model )
 
-`RESULTS` is a python dictionaty that stores all the information of the fit. The percentile 50 is stores as... `x_Q50`, the perntile 16 as `x_Q16`, etc, where `x` is a fitted varible, like redshift, etc. Therefore, the fitted outflow values are
+`RESULTS` is a python dictionaty that stores all the information of the fit. The percentile 50 is stored as... `x_Q50`, the percentile 16 as `x_Q16`, etc, where `x` is a fitted varible, like redshift, etc. Therefore, the fitted outflow values are
 
 .. code:: python
 

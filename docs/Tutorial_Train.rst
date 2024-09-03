@@ -11,7 +11,7 @@ Let's start by loading `zELDA` grid of lines:
 .. code:: python
 
           import numpy as np
-          import Lya_zelda as Lya
+          import Lya_zelda_II as Lya
           import pickle
           from sklearn.neural_network import MLPRegressor
 

@@ -3,14 +3,14 @@ Tutorial : Computing ideal line profiles
 
 In this tutorial you will, hopefully, learn how to compute ideal line Lyman-alpha line profiles with `zELDA`. The lines computed in this tutorial are ideal becase they don't suffer from the typical artifacts caused by the fact the instruments are not perfect. These lines are in the rest frame of the galaxy.
 
-Computing one ideal line profile
+Computing a ideal line profile
 ********************************
 
 Let's start by loading `zELDA` and setting the location of the LyaRT grids:
 
 .. code:: python
 
-          import Lya_zelda as Lya
+          import Lya_zelda_II as Lya
 
           your_grids_location = '/This/Folder/Contains/The/Grids/'
 
@@ -72,6 +72,42 @@ This should show something like this
 
 .. image:: figs_and_codes/fig_Tutorial_1_1.png
    :width: 600
+
+Computing a ideal line profile with the IGM absorption
+********************************
+
+Now let's create an IGM transmission curve. This is a simple toy model. For this example we are going to set the IGM transmission bluer than Lyman-alpha to 0.3 and for redder than Lyman-alpha to 1.
+
+.. code:: python
+
+          w_Lya = 1215.68
+          T_IGM_Arr = np.ones( len( wavelength_Arr ) )
+
+          T_IGM_Arr[ wavelength_Arr * 1e10 < w_Lya ] = 0.3
+
+Now let's convolve the line profile with the IGM transmission curve
+
+.. code:: python
+
+          IGM_Line_Arr = Line_Arr * T_IGM_Arr
+
+Let's see how it looks
+
+.. code:: python
+
+          plt.plot( wavelength_Arr *1e10 , Line_Arr    *1./np.amax( Line_Arr )  , label='Intrinsic' )
+          plt.plot( wavelength_Arr *1e10 , IGM_Line_Arr*1./np.amax( Line_Arr )  , label='IGM Convolved' )
+          plt.plot( wavelength_Arr *1e10 , T_IGM_Arr , label='IGM transmission' )
+          plt.xlabel('wavelength[A]' , size=15 )
+          plt.ylabel('Flux density [a.u.]' , size=15 )
+          plt.legend(loc=0)
+          plt.show()
+
+It should look something like this
+
+.. image:: figs_and_codes/fig_Tutorial_1_IGM.png
+   :width: 600
+
 
 
 Computing many ideal line profile
