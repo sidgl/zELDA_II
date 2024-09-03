@@ -32,7 +32,7 @@ from pyswarms.single.global_best import GlobalBestPSO
 #====================================================================#
 #====================================================================#
 #====================================================================#
-Data_location = '/global/users/sidgurung/PROMARE/Grids/'
+Data_location = '/This/is/where/your/grids/should/be/CHANGE/ME/'
 #====================================================================#
 #====================================================================#
 #====================================================================#
@@ -1095,12 +1095,6 @@ def load_Grid_Line( Geometry , MODE='FULL' ):
     Geometry_Set = [ 'Thin_Shell'  , 'Galactic_Wind'  , 'Bicone_X_Slab_In' , 'Bicone_X_Slab_Out' ]
 
     geo_code     = [ 'Thin_Shell'  , 'Wind'           , 'Bicone_X_Slab' , 'Bicone_X_Slab' ]
-
-    #this_dir, this_filename = os.path.split(__file__)
-
-    #print( 'HARDCORING PATH TO GRIDS!!!!' )
-    #this_dir = '/global/users/sidgurung/PROMARE/Grids/'
-    #this_dir = '/global/users/sidgurung/PROMARE/Grids/'
 
     if not Geometry in [ 'Thin_Shell_Cont' , 'Thin_Shell_Cont_Light' ] :
 

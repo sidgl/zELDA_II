@@ -14,7 +14,7 @@ zELDA's documentation v0.1
    :caption: Contents zELDA II:
 
    intro
-   installation
+   installation_II
    About_the_data_grids
    Tutorial_ideal
    Tutorial_mock
@@ -27,6 +27,7 @@ zELDA's documentation v0.1
    :maxdepth: 2
    :caption: Contents zELDA I:
 
+   installation
    Tutorial_Train
    Tutorial_DNN
 
