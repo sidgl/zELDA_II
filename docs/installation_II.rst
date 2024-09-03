@@ -13,7 +13,7 @@ To install `zELDA`'scripts is downloading the code from GitHub:
 .. code:: python
 
           $ git clone https://github.com/sidgl/zELDA_II/
-          $ cd Lya_zelda
+          $ cd zELDA_II
           $ pip install .
 
 Remember that you can also add the tag ``--user`` ,  if necessary.
