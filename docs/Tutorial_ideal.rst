@@ -3,7 +3,7 @@ Tutorial : Computing ideal line profiles
 
 In this tutorial you will, hopefully, learn how to compute ideal line Lyman-alpha line profiles with `zELDA`. The lines computed in this tutorial are ideal becase they don't suffer from the typical artifacts caused by the fact the instruments are not perfect. These lines are in the rest frame of the galaxy.
 
-Computing a ideal line profile
+Computing an ideal line profile
 ********************************
 
 Let's start by loading `zELDA` and setting the location of the LyaRT grids:
@@ -73,7 +73,7 @@ This should show something like this
 .. image:: figs_and_codes/fig_Tutorial_1_1.png
    :width: 600
 
-Computing a ideal line profile with the IGM absorption
+Computing an ideal line profile with the IGM absorption
 ********************************
 
 Now let's create an IGM transmission curve. This is a simple toy model. For this example we are going to set the IGM transmission bluer than Lyman-alpha to 0.3 and for redder than Lyman-alpha to 1.
@@ -110,7 +110,7 @@ It should look something like this
 
 
 
-Computing many ideal line profile
+Computing many ideal line profiles
 *********************************
 
 Above we have just seen how to compute one ideal line profile. In the case that you want to compute several `zELDA` has a more compact function. 
