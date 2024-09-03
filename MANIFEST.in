@@ -1,5 +1,6 @@
 include Lya_zelda_II/DATA/List_of_DATA_files
 include Lya_zelda_II/DATA/nn_*1.sav
+include Lya_zelda_II/DATA/List_of_DATA_files_II
 include Lya_zelda_II/DATA/MODELS_ZELDA_II/MODELS_IGM+z/data_PCA_Nbins_600_Dmin_-12.0_Dmax_12.0_Dcore_True_Ntrain_50000.npy
 include Lya_zelda_II/DATA/MODELS_ZELDA_II/MODELS_IGM+z/nn_OUTFLOW_Npca_100_N_1500000_103_53_25_prop_f10A_it_0.sav
 include Lya_zelda_II/DATA/MODELS_ZELDA_II/MODELS_IGM+z/nn_OUTFLOW_Npca_100_N_1500000_103_53_25_prop_f1A_it_0.sav

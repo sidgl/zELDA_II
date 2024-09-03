@@ -20,6 +20,17 @@ Remember that you can also add the tag ``--user`` ,  if necessary.
 
 `zELDA` uses a specific version of `numpy` and `sci-kit-learn`. This means that most likely `pip` will try to change to those versions when you install `zELDA`. If you want to avoid this you can create a virtual environment, which is always useful to tests installations. 
 
+You can check if all the `zELDA II` are in place by running...
+
+.. code:: python
+
+          import Lya_zelda_II as Lya
+
+          Lya.Check_if_DATA_files_are_found_zELDA_II()
+
+You should see a list of files with `True` at the end (hopefully). 
+
+
 LyaRT data grids
 ****************
 

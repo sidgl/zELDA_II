@@ -71,6 +71,53 @@ def Check_if_DATA_files_are_found():
 #====================================================================#
 #====================================================================#
 #====================================================================#
+def Check_if_DATA_files_are_found_zELDA_II():
+    '''
+        This function checks if all the data files are in the set directory.
+
+        **Input**:
+
+        None : None
+
+        **Output**:
+
+        Bool_1 : Bool
+                    1 if     found.
+                    0 if not found.
+    '''
+    print( 'Looking for files in... Data_location =' , Data_location )
+
+    this_dir, this_filename = os.path.split(__file__)
+
+    Bool_1 = True
+
+    arxiv_with_file_names = this_dir + '/DATA/List_of_DATA_files_II'
+
+    print('reading...' , arxiv_with_file_names )
+
+    with open( arxiv_with_file_names ) as fd:
+
+        for line in fd.readlines():
+
+            arxiv_name = line.strip('\n')
+
+            dir_tocheck = this_dir + '/DATA/' + arxiv_name
+
+            Bool_is_there = os.path.isfile( dir_tocheck )
+
+            Bool_1 = Bool_1 * Bool_is_there
+
+            print( dir_tocheck , Bool_is_there )
+
+    if Bool_1 :
+        print( 'Yes, everything is in place. Apparently.' )
+    if not Bool_1 :
+        print( 'Ups, why did this hapen?. Apparently something is missing......' )
+
+    return Bool_1
+#====================================================================#
+#====================================================================#
+#====================================================================#
 def load_machine_fesc( Machine , property_name , Geometry ):
     '''
         This functions gives you the trained model that you want to use.
