@@ -1,7 +1,7 @@
 import setuptools
 
-from setuptools.command.develop import develop
-from setuptools.command.install import install
+#from setuptools.command.develop import develop
+#from setuptools.command.install import install
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
@@ -14,12 +14,12 @@ setuptools.setup(
     description="Fast Lyman alpha Radiative Transfer for everyone!",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/sidgurun/LyaRT-Grid",
-    download_url = 'https://github.com/sidgurun/Lya_zelda/archive/refs/tags/0.0.05.tar.gz',
+    url="https://github.com/sidgl/zELDA_II",
+    download_url = 'https://github.com/sidgl/zELDA_II',
     packages=setuptools.find_packages(),
     #install_requires=[ 'sklearn>=20.0' ],
     #scikit-learn==0.22.1
-    install_requires=[ 'scikit-learn==0.22.1', 'pyswarms'  , 'emcee' , 'numpy==1.18.1'],
+    install_requires=[ 'scikit-learn==1.5', 'pyswarms==1.3.0'  , 'emcee==3.0.2' , 'numpy<2.0.0'],
     include_package_data = True,
     classifiers=(
         "Programming Language :: Python :: 3",

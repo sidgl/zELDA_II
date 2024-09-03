@@ -121,7 +121,8 @@ If you want a cooler and more 'accurate' plot of the line profile you can use:
           w_INT_pix_Arr , f_INT_pix_Arr = Lya.plot_a_rebinned_line( w_Arr , f_Arr , PIX_t )
           w_IGM_pix_Arr , f_IGM_pix_Arr = Lya.plot_a_rebinned_line( w_IGM_Arr , f_IGM_Arr , PIX_t )
 
-          plt.plot( w_pix_Arr , f_pix_Arr )
+          plt.plot( w_INT_pix_Arr , f_INT_pix_Arr , label='Intrinsic' )
+          plt.plot( w_IGM_pix_Arr , f_IGM_pix_Arr , label='IGM attenuated' )
           plt.xlabel('wavelength[A]' , size=15 )
           plt.ylabel('Flux density [a.u.]' , size=15 )
           plt.xlim(1815,1835)
