@@ -90,7 +90,7 @@ You can load the default `'Thin_Shell_Cont'` by doing
 
 .. code:: python
 
-          import Lya_zelda as Lya
+          import Lya_zelda_II as Lya
 
           your_grids_location = '/This/Folder/Contains/The/Grids/'
 

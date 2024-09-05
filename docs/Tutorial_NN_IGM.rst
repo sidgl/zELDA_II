@@ -369,8 +369,7 @@ And we run it like...
           
           SMOO_VALUE_MAX = make_corner_plots( CHAINS )
           
-          plt.savefig( 'fig_tutorial_fit_IGM_3.png' )
-          plt.clf()
+          plt.show()
 
 You should get something line this...
 

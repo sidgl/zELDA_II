@@ -80,6 +80,7 @@ Now let's create an IGM transmission curve. This is a simple toy model. For this
 
 .. code:: python
 
+          import numpy as np
           w_Lya = 1215.68
           w_IGM_rest_Arr = np.linspace( w_Lya-20.0 , w_Lya+20.0 , 1000 )
           T_IGM_Arr = np.ones( len( w_IGM_rest_Arr ) )

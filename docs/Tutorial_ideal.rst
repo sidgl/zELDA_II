@@ -119,7 +119,7 @@ Let's start like in the case above in which we set the location of the grids:
 
 .. code:: python
 
-          import Lya_zelda as Lya
+          import Lya_zelda_II as Lya
 
           your_grids_location = '/This/Folder/Contains/The/Grids/'
 
