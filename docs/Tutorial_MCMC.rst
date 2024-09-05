@@ -185,8 +185,8 @@ Now let's do a correlation plot to see where the walkers are. For this we will u
 
 .. code:: python
 
-          >>> make_corner_plots( flat_samples )
-          >>> plt.show()
+          make_corner_plots( flat_samples )
+          plt.show()
 
 And it should give you something like:
 

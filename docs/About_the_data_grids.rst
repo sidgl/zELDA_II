@@ -10,11 +10,11 @@ Let's start by loading `zELDA` and setting the location of the LyaRT grids:
 
 .. code:: python
 
-          >>> import Lya_zelda as Lya
+          import Lya_zelda_II as Lya
 
-          >>> your_grids_location = '/This/Folder/Contains/The/Grids/'
+          your_grids_location = '/This/Folder/Contains/The/Grids/'
 
-          >>> Lya.funcs.Data_location = your_grids_location
+          Lya.funcs.Data_location = your_grids_location
 
 where `/This/Folder/Contains/The/Grids/` is the place where you store the LyaRT data grids, as shown in the :doc:`Installation <installation>` section.
 
@@ -25,13 +25,13 @@ Let's load a data grid to start working. In particular we are going to load the 
 
 .. code:: python
 
-          >>> LyaRT_Grid = Lya.load_Grid_Line( 'Thin_Shell' )
+          LyaRT_Grid = Lya.load_Grid_Line( 'Thin_Shell' )
 
 `LyaRT_Grid` is a python dictionary containing all the data necessary for the interpolation. Let's look to the keys
 
 .. code:: python
 
-          >>> print( LyaRT_Grid.keys() )
+          print( LyaRT_Grid.keys() )
 
           dict_keys(['logNH_Arr', 'logta_Arr', 'Grid', 'x_Arr', 'V_Arr'])
 
@@ -39,14 +39,14 @@ The variables `'V_Arr'`, `'logNH_Arr'` and `'logta_Arr'` are 1-D numpy arrays th
 
 .. code:: python
 
-          >>> print( 'The expansion velocity [km/s] is evaluated in : ')
-          >>> print( LyaRT_Grid['V_Arr'    ] )
+          print( 'The expansion velocity [km/s] is evaluated in : ')
+          print( LyaRT_Grid['V_Arr'    ] )
 
-          >>> print( 'The logarithmic of the HI column density [cm**-2] is evaluated in : ')
-          >>> print( LyaRT_Grid['logNH_Arr'] )
+          print( 'The logarithmic of the HI column density [cm**-2] is evaluated in : ')
+          print( LyaRT_Grid['logNH_Arr'] )
 
-          >>> print( 'The logarithmic of the dust optical depth is evaluated in : ')
-          >>> print( LyaRT_Grid['logta_Arr'] )
+          print( 'The logarithmic of the dust optical depth is evaluated in : ')
+          print( LyaRT_Grid['logta_Arr'] )
 
           The expansion velocity [km/s] is evaluated in :
           [   0   10   20   30   40   50   60   70   80   90  100  150  200  250
@@ -64,18 +64,18 @@ Then, `LyaRT_Grid['Grid']` are the line profiles in each of the nodes of the 3-D
 
 .. code:: python
  
-          >>> w_Arr = Lya.convert_x_into_lamda( LyaRT_Grid['x_Arr'] )
+          w_Arr = Lya.convert_x_into_lamda( LyaRT_Grid['x_Arr'] )
 
 `w_Arr` is a 1-D array with the wavelengths in meters. Let's take a look to the spectrum:
 
 .. code:: python
             
-          >>> import pylab as plt
-          >>> plt.plot( w_Arr , LyaRT_Grid['Grid'][0,1,2] )
-          >>> plt.xlim( 1213*1e-10 , 1218*1e-10 )
-          >>> plt.xlabel( 'wavelength [m]' )
-          >>> plt.ylabel( 'Flux density [a.u.]' )
-          >>> plt.show()
+          import pylab as plt
+          plt.plot( w_Arr , LyaRT_Grid['Grid'][0,1,2] )
+          plt.xlim( 1213*1e-10 , 1218*1e-10 )
+          plt.xlabel( 'wavelength [m]' )
+          plt.ylabel( 'Flux density [a.u.]' )
+          plt.show()
 
 .. image:: figs_and_codes/fig_Tutorial_5_1.png
    :width: 600
@@ -90,42 +90,42 @@ You can load the default `'Thin_Shell_Cont'` by doing
 
 .. code:: python
 
-          >>> import Lya_zelda as Lya
+          import Lya_zelda as Lya
 
-          >>> your_grids_location = '/This/Folder/Contains/The/Grids/'
+          your_grids_location = '/This/Folder/Contains/The/Grids/'
 
-          >>> Lya.funcs.Data_location = your_grids_location
+          Lya.funcs.Data_location = your_grids_location
 
 where `/This/Folder/Contains/The/Grids/` is the place where you store the LyaRT data grids, as shown in the :doc:`Installation <installation>` section.
 
 .. code:: python
 
-          >>> LyaRT_Grid_Full = Lya.load_Grid_Line( 'Thin_Shell_Cont' )
+          LyaRT_Grid_Full = Lya.load_Grid_Line( 'Thin_Shell_Cont' )
 
 or 
 
 .. code:: python
 
-          >>> LyaRT_Grid_Full = Lya.load_Grid_Line( 'Thin_Shell_Cont' , MODE='FULL' )
+          LyaRT_Grid_Full = Lya.load_Grid_Line( 'Thin_Shell_Cont' , MODE='FULL' )
 
 And you can see where the grid is evaluated by doing
 
 .. code:: python
 
-          >>> print( 'The expansion velocity [km/s] is evaluated in : ')
-          >>> print( LyaRT_Grid_Full['V_Arr'] )
+          print( 'The expansion velocity [km/s] is evaluated in : ')
+          print( LyaRT_Grid_Full['V_Arr'] )
           
-          >>> print( 'The logarithmic of the HI column density [cm**-2] is evaluated in : ')
-          >>> print( LyaRT_Grid_Full['logNH_Arr'] )
+          print( 'The logarithmic of the HI column density [cm**-2] is evaluated in : ')
+          print( LyaRT_Grid_Full['logNH_Arr'] )
           
-          >>> print( 'The logarithmic of the dust optical depth is evaluated in : ')
-          >>> print( LyaRT_Grid_Full['logta_Arr'] )
+          print( 'The logarithmic of the dust optical depth is evaluated in : ')
+          print( LyaRT_Grid_Full['logta_Arr'] )
           
-          >>> print( 'The logarithmic of the intrinsic equivalent width [A] is evaluated in : ')
-          >>> print( LyaRT_Grid_Full['logEW_Arr'] )
+          print( 'The logarithmic of the intrinsic equivalent width [A] is evaluated in : ')
+          print( LyaRT_Grid_Full['logEW_Arr'] )
           
-          >>> print( 'The logarithmic of the intrinsic line width [A] is evaluated in : ')
-          >>> print( LyaRT_Grid_Full['Wi_Arr'] )
+          print( 'The logarithmic of the intrinsic line width [A] is evaluated in : ')
+          print( LyaRT_Grid_Full['Wi_Arr'] )
 
           The expansion velocity [km/s] is evaluated in :
           [   0   10   20   30   40   50   60   70   80   90  100  150  200  250
@@ -156,11 +156,11 @@ The reduction of the size of the grid is done by reducing the number of bins in 
 
 .. code:: python
 
-          >>> print( 'The logarithmic of the intrinsic equivalent width [A] is evaluated in : ')
-          >>> print( LyaRT_Grid_Light['logEW_Arr'] )
+          print( 'The logarithmic of the intrinsic equivalent width [A] is evaluated in : ')
+          print( LyaRT_Grid_Light['logEW_Arr'] )
 
-          >>> print( 'The logarithmic of the intrinsic line width [A] is evaluated in : ')
-          >>> print( LyaRT_Grid_Light['Wi_Arr'] ) 
+          print( 'The logarithmic of the intrinsic line width [A] is evaluated in : ')
+          print( LyaRT_Grid_Light['Wi_Arr'] ) 
 
           The logarithmic of the intrinsic equivalent width [A] is evaluated in :
           [-1.   0.   0.4  0.8  1.2  1.6  2.   3. ]

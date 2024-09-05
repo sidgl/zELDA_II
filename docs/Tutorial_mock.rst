@@ -90,7 +90,7 @@ Now let's generate the IGM attenuated line
 
 .. code:: python
 
-    w_IGM_Arr , f_IGM_Arr , _ = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, LyaRT_Grid, Geometry , T_IGM_Arr=T_IGM    _Arr , w_IGM_Arr=w_IGM_rest_Arr )
+    w_IGM_Arr , f_IGM_Arr , _ = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t, PIX_t, LyaRT_Grid, Geometry , T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_rest_Arr )
 
 and this is how they look
 
