@@ -5866,7 +5866,15 @@ def Pipieline_Zelda_2_get_dir_machines( MODE ):
 
     this_dir, this_filename = os.path.split(__file__)
 
-    pac_dir = this_dir + '/DATA/MODELS_ZELDA_II/MODELS_' + MODE + '/'
+    if MODE == 'NoIGM'     : PATH = 'NoIGM' 
+    if MODE == 'IGM+z'     : PATH = 'REC_IGM+z' 
+    if MODE == 'IGM-z'     : PATH = 'REC_IGM-z' 
+    if MODE == 'REC_IGM+z' : PATH = 'REC_IGM+z' 
+    if MODE == 'REC_IGM-z' : PATH = 'REC_IGM-z' 
+    if MODE == 'RAW_IGM+z' : PATH = 'RAW_IGM+z' 
+    if MODE == 'RAW_IGM-z' : PATH = 'RAW_IGM-z' 
+
+    pac_dir = this_dir + '/DATA/MODELS_ZELDA_II/MODELS_' + PATH + '/'
 
     return pac_dir
 #====================================================================#
@@ -6045,10 +6053,10 @@ def Fit_Observed_line_with_IGM( w_tar_Arr , f_tar_Arr , s_tar_Arr , PIX_tar , FW
 
     RESULTS = {}
 
-    if MODE in [ 'IGM-z' ]:
+    if MODE in [ 'IGM-z' , 'REC_IGM-z' , 'RAW_IGM-z' ]:
         FITTING_FUNTION = NN_measure_PCA_ALL_props_NOz
 
-    if MODE in [ 'IGM+z' , 'NoIGM' ]:
+    if MODE in [ 'IGM+z' , 'NoIGM' , 'REC_IGM+z' , 'RAW_IGM+z' ]:
         FITTING_FUNTION = NN_measure_PCA_ALL_props
 
     N_Pix         = DIC_loaded_models[ 'N_Pix'         ] 
