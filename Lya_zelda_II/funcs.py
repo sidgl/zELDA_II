@@ -5574,10 +5574,10 @@ def NN_measure_PCA_ALL_props_NOz( w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar ,
 #====================================================================#
 def KS_input( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , SOL_z , SOL_logV , SOL_logN , SOL_logt , SOL_logE , SOL_logW , my_PCA_model , MODE , Delta_min=None, Delta_max=None , Nbins_tot=None, Denser_Center=None ):
 
-    if MODE in [ 'ZAL' , 'FRE' , 'IGM+z' , 'NoIGM' ]:
+    if MODE in [ 'ZAL' , 'FRE' , 'IGM+z' , 'NoIGM' , 'REC_IGM+z' , 'RAW_IGM+z' ]:
         _ , _ , _ , _ , INPUT = Treat_A_Line_To_NN_Input_PCA( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , my_PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center )
 
-    if MODE in [ 'NoZ' , 'IGM-z' ]:
+    if MODE in [ 'NoZ' , 'IGM-z' , 'REC_IGM-z' , 'RAW_IGM-z' ]:
         _ , _ , _ , _ , INPUT = Treat_A_Line_To_NN_Input_PCA_NOz( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , my_PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center )
 
     new = [ SOL_z , SOL_logV , SOL_logN , SOL_logt , SOL_logE , SOL_logW ]
