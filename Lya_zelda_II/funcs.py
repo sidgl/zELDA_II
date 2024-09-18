@@ -5867,12 +5867,15 @@ def Pipieline_Zelda_2_get_dir_machines( MODE ):
     this_dir, this_filename = os.path.split(__file__)
 
     if MODE == 'NoIGM'     : PATH = 'NoIGM' 
-    if MODE == 'IGM+z'     : PATH = 'REC_IGM+z' 
-    if MODE == 'IGM-z'     : PATH = 'REC_IGM-z' 
+
+
     if MODE == 'REC_IGM+z' : PATH = 'REC_IGM+z' 
     if MODE == 'REC_IGM-z' : PATH = 'REC_IGM-z' 
     if MODE == 'RAW_IGM+z' : PATH = 'RAW_IGM+z' 
     if MODE == 'RAW_IGM-z' : PATH = 'RAW_IGM-z' 
+
+    if MODE == 'IGM+z'     : PATH = 'RAW_IGM+z' 
+    if MODE == 'IGM-z'     : PATH = 'REC_IGM-z' 
 
     pac_dir = this_dir + '/DATA/MODELS_ZELDA_II/MODELS_' + PATH + '/'
 
