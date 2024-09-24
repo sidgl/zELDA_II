@@ -29,6 +29,9 @@ import emcee
 from sklearn.neural_network import MLPRegressor
 
 from pyswarms.single.global_best import GlobalBestPSO
+
+import warnings
+warnings.filterwarnings("ignore")
 #====================================================================#
 #====================================================================#
 #====================================================================#
@@ -5878,6 +5881,8 @@ def Pipieline_Zelda_2_get_dir_machines( MODE ):
     if MODE == 'IGM-z'     : PATH = 'REC_IGM-z' 
 
     pac_dir = this_dir + '/DATA/MODELS_ZELDA_II/MODELS_' + PATH + '/'
+
+    #print( 'Using...' , pac_dir )
 
     return pac_dir
 #====================================================================#
