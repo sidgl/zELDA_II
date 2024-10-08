@@ -5577,10 +5577,10 @@ def NN_measure_PCA_ALL_props_NOz( w_tar_Arr , f_tar_Arr , s_tar_Arr , FWHM_tar ,
 #====================================================================#
 def KS_input( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , SOL_z , SOL_logV , SOL_logN , SOL_logt , SOL_logE , SOL_logW , my_PCA_model , MODE , Delta_min=None, Delta_max=None , Nbins_tot=None, Denser_Center=None ):
 
-    if MODE in [ 'ZAL' , 'FRE' , 'IGM+z' , 'NoIGM' , 'REC_IGM+z' , 'RAW_IGM+z' ]:
+    if MODE in [ 'ZAL' , 'FRE' , 'IGM+z' , 'NoIGM' , 'REC_IGM+z' , 'RAW_IGM+z' , 'REC+z' , 'RAW+z' ]:
         _ , _ , _ , _ , INPUT = Treat_A_Line_To_NN_Input_PCA( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , my_PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center )
 
-    if MODE in [ 'NoZ' , 'IGM-z' , 'REC_IGM-z' , 'RAW_IGM-z' ]:
+    if MODE in [ 'NoZ' , 'IGM-z' , 'REC_IGM-z' , 'RAW_IGM-z' , 'REC-z' , 'RAW-z' ]:
         _ , _ , _ , _ , INPUT = Treat_A_Line_To_NN_Input_PCA_NOz( w_tar_Arr , f_tar_Arr , PIX_tar , FWHM_tar , my_PCA_model , Delta_min=Delta_min , Delta_max=Delta_max , Nbins_tot=Nbins_tot, Denser_Center=Denser_Center )
 
     new = [ SOL_z , SOL_logV , SOL_logN , SOL_logt , SOL_logE , SOL_logW ]
@@ -5871,7 +5871,6 @@ def Pipieline_Zelda_2_get_dir_machines( MODE ):
 
     if MODE == 'NoIGM'     : PATH = 'NoIGM' 
 
-
     if MODE == 'REC_IGM+z' : PATH = 'REC_IGM+z' 
     if MODE == 'REC_IGM-z' : PATH = 'REC_IGM-z' 
     if MODE == 'RAW_IGM+z' : PATH = 'RAW_IGM+z' 
@@ -5879,6 +5878,11 @@ def Pipieline_Zelda_2_get_dir_machines( MODE ):
 
     if MODE == 'IGM+z'     : PATH = 'RAW_IGM+z' 
     if MODE == 'IGM-z'     : PATH = 'REC_IGM-z' 
+
+    if MODE == 'REC+z'     : PATH = 'REC_IGM+z' 
+    if MODE == 'REC-z'     : PATH = 'REC_IGM-z' 
+    if MODE == 'RAW+z'     : PATH = 'RAW_IGM+z' 
+    if MODE == 'RAW-z'     : PATH = 'RAW_IGM-z' 
 
     pac_dir = this_dir + '/DATA/MODELS_ZELDA_II/MODELS_' + PATH + '/'
 
@@ -6061,10 +6065,16 @@ def Fit_Observed_line_with_IGM( w_tar_Arr , f_tar_Arr , s_tar_Arr , PIX_tar , FW
 
     RESULTS = {}
 
-    if MODE in [ 'IGM-z' , 'REC_IGM-z' , 'RAW_IGM-z' ]:
+    ALL_MODES = [ 'IGM-z' , 'REC_IGM-z' , 'RAW_IGM-z' , 'REC-z' , 'RAW-z' ] + [ 'IGM+z' , 'NoIGM' , 'REC_IGM+z' , 'RAW_IGM+z' , 'REC+z' , 'RAW+z' ]
+
+    if not MODE in ALL_MODES:
+        print( 'The chosen fitting mode is not available. Choose between' )
+        print( 'IGM-z' , 'REC_IGM-z' , 'RAW_IGM-z' , 'REC-z' , 'RAW-z' , 'IGM+z' , 'NoIGM' , 'REC_IGM+z' , 'RAW_IGM+z' , 'REC+z' , 'RAW+z' )
+
+    if MODE in [ 'IGM-z' , 'REC_IGM-z' , 'RAW_IGM-z' , 'REC-z' , 'RAW-z' ]:
         FITTING_FUNTION = NN_measure_PCA_ALL_props_NOz
 
-    if MODE in [ 'IGM+z' , 'NoIGM' , 'REC_IGM+z' , 'RAW_IGM+z' ]:
+    if MODE in [ 'IGM+z' , 'NoIGM' , 'REC_IGM+z' , 'RAW_IGM+z' , 'REC+z' , 'RAW+z' ]:
         FITTING_FUNTION = NN_measure_PCA_ALL_props
 
     N_Pix         = DIC_loaded_models[ 'N_Pix'         ] 
