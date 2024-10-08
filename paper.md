@@ -36,15 +36,16 @@ aas-journal: Astrophysical Journal <- The name of the AAS journal.
 
 # Summary
 
-The forces on stars, galaxies, and dark matter under external gravitational
-fields lead to the dynamical evolution of structures in the universe. The orbits
-of these bodies are therefore key to understanding the formation, history, and
-future state of galaxies. The field of "galactic dynamics," which aims to model
-the gravitating components of galaxies to study their structure and evolution,
-is now well-established, commonly taught, and frequently used in astronomy.
-Aside from toy problems and demonstrations, the majority of problems require
-efficient numerical tools, many of which require the same base code (e.g., for
-performing numerical orbit integration).
+We present `zELDA` (redshift Estimator for Line profiles of Distant Lyman Alpha emitters), an open source code to model and fit Lyman-alpha (Lyα) line profiles. 
+The main motivation is to provide the community with an easy to use and fast tool to analyse Lyα line profiles uniformly to improve the understating of Lyα emitting galaxies. 
+In fiurst place, concerning the Lyα line modeling, `zELDA` is based on line profiles of the commonly used 'shell-model' pre-computed with the full Monte Carlo radiative transfer code LyaRT. 
+Thus, `zELDA` provides a regular grid of 'shell-model' spectrum ranging expansion velocity from -1000 km/s to 1000 km/s, neutral hydrogen column density from $10^{17.0}cm^{-2}$ to $10^{21.5}cm^{-2}$, dust optical depth  from $10^{-4}$ to 1, intrinsic equivalent width from 0.1 to 1000 Ángstrom and intrinsic line width from 0.01 to 6.0 angstroms.This gives a total of  3,132,000 grid nodes. 
+The line Lyα line profiles in an arbitray position inside the grid is compute via lineal interpolation. 
+`zELDA` also include the algorithms to transform the ideal Lyα line profiles into realistic profiles mocking observations. 
+In second place, the fitting of observed line profiles is handle with several methodologies. 
+`zELDA` includes the fitting of Lyα line profiles obscured and unobscured by the intergalactic medium. 
+Regarding the unobscured Lyα line profiles, `zELDA` includes an MCMC algotirhm powered by the python package EMCEE and two artificial neural netwrok models trained in mock spectrum. 
+Regarding the IGM attenuated Lyα line profiles `zELDA` includes four artificial neural network models trained with the `zELDA` 'shell-model' grid and the IGM transmission curves from Byrohl 2020. 
 
 # Statement of need
 
