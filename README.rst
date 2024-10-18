@@ -31,7 +31,7 @@ Documentation
 
 You can find all the necessay information for installation and tutorials here:
 
-| https://zelda.readthedocs.io/en/latest/
+| https://zelda-ii.readthedocs.io/index.html
 
 Origins and motivation
 **********************
