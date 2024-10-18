@@ -224,7 +224,7 @@ And we can plot it to compare with the actual intrinsic line profile:
 
 You should get something like:
 
-![](docs/figs_and_codes/fig_tutorial_fit_IGM_2.png)
+![Example of a Lyman-alpha line profile reconstruction. The IGM transmission curve is shown in blue. The intrinsic line profile in shown in orange. The Observed line profile after the IGM attenuation is shown in green. The reconstructed line profile is shown in red.](docs/figs_and_codes/fig_tutorial_fit_IGM_2.png)
 
 # Citations
 
