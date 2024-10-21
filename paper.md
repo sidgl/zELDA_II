@@ -45,7 +45,7 @@ The line Lyα line profiles in an arbitrary position inside the grid is computed
 `zELDA` also includes the algorithms to transform the ideal Lyα line profiles into realistic profiles mocking observations. 
 In second place, the fitting of observed line profiles is handled with several methodologies. 
 `zELDA` includes the fitting of Lyα line profiles obscured and unobscured by the intergalactic medium (IGM). 
-Regarding the unobscured Lyα line profiles, `zELDA` includes an MCMC algorithm powered by the python package `EMCEE` 
+Regarding the unobscured Lyα line profiles, `zELDA` includes an MCMC algorithm powered by the python package `EMCEE` `[@Foreman-Mackey]
 and two artificial neural network models trained in mock spectrum. 
 Regarding the IGM attenuated Lyα line profiles, `zELDA` includes four artificial neural network models trained with the `zELDA` 'shell-model' grid and the IGM transmission curves from the TNG100 simulation .
 
