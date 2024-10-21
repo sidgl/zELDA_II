@@ -110,7 +110,8 @@ where `/This/Folder/Contains/The/Grids/` is the location of your computer where 
     # Defining the model parameters:
     z_t      = 3.0   # redshift of the source
     V_t      = 50.0  # Outflow expansion velocity [km/s]
-    log_N_t  = 20.   # Logarithmic of the neutral hydrogen column density [cm**-2]
+    log_N_t  = 20.   # Logarithmic of the neutral hydrogen column density 
+                     # [cm**-2]
     t_t      = 0.01  # Dust optical depth
     log_EW_t = 1.5   # Logarithmic the intrinsic equivalent width [A]
     W_t      = 0.5   # Intrinsic width of the line [A]
@@ -118,7 +119,8 @@ where `/This/Folder/Contains/The/Grids/` is the location of your computer where 
 
     # Defining the quality of the line profile:
     PNR_t  = 20.0 # Signal to noise ratio of the maximum of the line.
-    FWHM_t = 0.1  # Full width half maximum diluting the line. Mimics finite resolution. [A]
+    FWHM_t = 0.1  # Full width half maximum diluting the line. 
+                  # Mimics finite resolution. [A]
     PIX_t  = 0.1  # Wavelength binning of the line. [A]
 
     np.random.seed(5) # Set a numpy random seed for replicating this tutorial.
@@ -171,7 +173,9 @@ The function `Fit_Observed_line_with_IGM` is used to fit 1 line and it loads the
 ```python
     DIC_loaded_models , my_PCA_model = Lya.Pipieline_Zelda_2_Load_Models( 'IGM-z' )
 
-    RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER , DIC_loaded_models=DIC_loaded_models , my_PCA_model=my_PCA_model )
+    RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , 
+              PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER , 
+              DIC_loaded_models=DIC_loaded_models , my_PCA_model=my_PCA_model )
 ```
 
 `RESULTS` is a python dictionaty that stores all the information of the fit. The percentile 50 is stored as `x_Q50`, the percentile 16 as `x_Q16`, etc, where `x` is a fitted varible, like redshift, etc. Therefore, the fitted outflow values are
@@ -198,7 +202,12 @@ Then, the measured IGM Lya escape fraction 4 amstrongs arround Lya is
 We can compute the solution line profile as...
 
 ```python
-    w_SOL_Arr , f_SOL_Arr , s_SOL_Arr , sol_info = Lya.Generate_a_real_line( z_sol , 10**log_V_sol , log_N_sol, 10**log_t_sol, F_t, log_E_sol, 10**log_W_sol , 1000. , FWHM_t , PIX_t , LyaRT_Grid, Geometry , RETURN_AL    L=True )
+    w_SOL_Arr , f_SOL_Arr , s_SOL_Arr , sol_info = Lya.Generate_a_real_line( z_sol , 
+                                                   10**log_V_sol , log_N_sol, 
+                                                   10**log_t_sol, F_t, log_E_sol, 
+                                                   10**log_W_sol , 1000. , FWHM_t , 
+                                                   PIX_t , LyaRT_Grid, Geometry , 
+                                                   RETURN_ALL=True )
 ```
 
 And we can plot it to compare with the actual intrinsic line profile:
@@ -206,7 +215,8 @@ And we can plot it to compare with the actual intrinsic line profile:
 ```python
     f_SOL_Arr = f_SOL_Arr * 1. / np.amax(f_SOL_Arr) # rescaling to be comparable
 
-    w_SOL_OBS_pix_Arr  , f_SOL_OBS_pix_Arr  = Lya.plot_a_rebinned_line( w_SOL_Arr , f_SOL_Arr , PIX_t )
+    w_SOL_pix_Arr  , f_SOL_pix_Arr  = Lya.plot_a_rebinned_line( w_SOL_Arr , 
+                                                        f_SOL_Arr , PIX_t )
 
     plt.plot( w_IGM_rest_Arr*(1+z_t) , T_IGM_Arr , label='IGM tranmission' )
     plt.plot( w_INT_Arr , f_INT_Arr , label='Intrinsic' )
