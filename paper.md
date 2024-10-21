@@ -6,7 +6,7 @@ tags:
   - radiative transfer
   - galaxies
 authors:
-  - name: Siddhrtha Gurung-Lopez    
+  - name: Siddhartha Gurung-Lopez    
     orcid: 0000-0001-9333-8470
     affiliation: "1, 2" # (Multiple affiliations must be quoted)
     corresponding: true # (This is how to denote the corresponding author)
@@ -43,7 +43,7 @@ In second place, the fitting of observed line profiles is handled with several m
 `zELDA` includes the fitting of Lyα line profiles obscured and unobscured by the intergalactic medium (IGM). 
 Regarding the unobscured Lyα line profiles, `zELDA` includes an MCMC algorithm powered by the python package `EMCEE` [@Foreman-Mackey]
 and two artificial neural network models trained in mock spectrum. 
-Regarding the IGM attenuated Lyα line profiles, `zELDA` includes four artificial neural network models trained with the `zELDA` 'shell-model' grid and the IGM transmission curves from the TNG100 simulation .
+Regarding the IGM attenuated Lyα line profiles, `zELDA` includes four artificial neural network models trained with the `zELDA` 'shell-model' grid and the IGM transmission curves from the TNG100 simulation [@Byrohl2019; @Byrohl2020] .
 
 Tutorials on installation and usage can be found at https://zelda-ii.readthedocs.io/index.html. 
 
@@ -56,7 +56,7 @@ Moreover, `zELDA` is able to disentangle between the intergalactic and intereste
 One of the advantages of `zELDA` is that it can be used seamlessly in different observational configurations, allowing a direct comparison between different surveys and projects. 
 
 `zELDA` is developed to have a user-friendly interface so that it can be used by researchers and students in astronomy courses. 
-`zELDA` has been used already in a number of scientific publications, mainly to fit observational observations. 
+`zELDA` has been used already in a number of scientific publications [gurunglopez2022; Guaita2022] , mainly to fit observational observations. 
 `zELDA` will allow researchers to extract the maximum information from their observed Lyα line profiles. 
 Moreover, disentangeling the IGM from the ISM contribution will be key in future surveys to understand the Lyα selection function.
 
