@@ -56,7 +56,7 @@ Moreover, `zELDA` is able to disentangle between the intergalactic and intereste
 One of the advantages of `zELDA` is that it can be used seamlessly in different observational configurations, allowing a direct comparison between different surveys and projects. 
 
 `zELDA` is developed to have a user-friendly interface so that it can be used by researchers and students in astronomy courses. 
-`zELDA` has been used already in a number of scientific publications [gurunglopez2022; Guaita2022] , mainly to fit observational observations. 
+`zELDA` has been used already in a number of scientific publications [@gurunglopez2022; @Guaita2022] , mainly to fit observational observations. 
 `zELDA` will allow researchers to extract the maximum information from their observed Lyα line profiles. 
 Moreover, disentangeling the IGM from the ISM contribution will be key in future surveys to understand the Lyα selection function.
 
