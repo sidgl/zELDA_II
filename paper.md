@@ -78,7 +78,7 @@ Moreover, disentangeling the IGM from the ISM contribution will be key in future
 Another option for the installation is using PyPI: 
 
 ```
-          python3 -m pip install Lya_zelda_II
+          $ python3 -m pip install Lya_zelda_II
 ```
 
 Once the python pakage is installed, it is necessary to download the grid of Lyman-alpha shell spectrum. The grids are stored in https://zenodo.org/records/4733518. The grids can be downloaded by running
