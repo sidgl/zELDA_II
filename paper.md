@@ -70,21 +70,21 @@ Moreover, disentangeling the IGM from the ISM contribution will be key in future
 
 
 ```
-          $ git clone https://github.com/sidgl/zELDA_II/
-          $ cd zELDA_II
-          $ pip install .
+      $ git clone https://github.com/sidgl/zELDA_II/
+      $ cd zELDA_II
+      $ pip install .
 ```
 
 Another option for the installation is using PyPI: 
 
 ```
-          $ python3 -m pip install Lya_zelda_II
+      $ python3 -m pip install Lya_zelda_II
 ```
 
 Once the python pakage is installed, it is necessary to download the grid of Lyman-alpha shell spectrum. The grids are stored in https://zenodo.org/records/4733518. The grids can be downloaded by running
 
 ```
-          $ wget https://zenodo.org/record/4733518/files/Grids.zip
+      $ wget https://zenodo.org/record/4733518/files/Grids.zip
 ```
 
 Then, extract the Grids.zip content in the folder in which the grids will be saved and loaded from.
@@ -94,50 +94,50 @@ Then, extract the Grids.zip content in the folder in which the grids will be sav
 In this tutorial we show how fit Lyman-alpha line profiles using deep learning with `zELDA`. The first step is to load the  `zELDA` grids by running
 
 ```python
-          import Lya_zelda_II as Lya
-          import numpy as np
+      import Lya_zelda_II as Lya
+      import numpy as np
 
-          your_grids_location = '/This/Folder/Contains/The/Grids/'
-          Lya.funcs.Data_location = your_grids_location
+      your_grids_location = '/This/Folder/Contains/The/Grids/'
+      Lya.funcs.Data_location = your_grids_location
 
-          Geometry = 'Thin_Shell_Cont'
-          LyaRT_Grid = Lya.load_Grid_Line( Geometry )
+      Geometry = 'Thin_Shell_Cont'
+      LyaRT_Grid = Lya.load_Grid_Line( Geometry )
 ```
 
 where `/This/Folder/Contains/The/Grids/` is the location of your computer where the LyaRT data grids are stored. The redshift and shell model parameters must be set, as well as the quality of the desired mock line profile:
 
 ```python
-          # Defining the model parameters:
-          z_t      = 3.0   # redshift of the source
-          V_t      = 50.0  # Outflow expansion velocity [km/s]
-          log_N_t  = 20.   # Logarithmic of the neutral hydrogen column density [cm**-2]
-          t_t      = 0.01  # Dust optical depth
-          log_EW_t = 1.5   # Logarithmic the intrinsic equivalent width [A]
-          W_t      = 0.5   # Intrinsic width of the line [A]
-          F_t      = 1.    # Total flux of the line
+      # Defining the model parameters:
+      z_t      = 3.0   # redshift of the source
+      V_t      = 50.0  # Outflow expansion velocity [km/s]
+      log_N_t  = 20.   # Logarithmic of the neutral hydrogen column density [cm**-2]
+      t_t      = 0.01  # Dust optical depth
+      log_EW_t = 1.5   # Logarithmic the intrinsic equivalent width [A]
+      W_t      = 0.5   # Intrinsic width of the line [A]
+      F_t      = 1.    # Total flux of the line
 
-          # Defining the quality of the line profile:
-          PNR_t  = 20.0 # Signal to noise ratio of the maximum of the line.
-          FWHM_t = 0.1  # Full width half maximum diluting the line. Mimics finite resolution. [A]
-          PIX_t  = 0.1  # Wavelength binning of the line. [A]
+      # Defining the quality of the line profile:
+      PNR_t  = 20.0 # Signal to noise ratio of the maximum of the line.
+      FWHM_t = 0.1  # Full width half maximum diluting the line. Mimics finite resolution. [A]
+      PIX_t  = 0.1  # Wavelength binning of the line. [A]
 
-          np.random.seed(5) # Set a numpy random seed for replicating this tutorial.
+      np.random.seed(5) # Set a numpy random seed for replicating this tutorial.
 ```
 
 In this tutorial we used a simple toy model for an IGM transmission curve. We set the IGM transmission bluer than Lyman-alpha to 0 and for redder than Lyman-alpha to 1.
 
 ```python
-          w_Lya = 1215.68
-          w_IGM_rest_Arr = np.linspace( w_Lya-20.0 , w_Lya+20.0 , 1000 )
-          T_IGM_Arr = np.ones( len( w_IGM_rest_Arr ) )
+      w_Lya = 1215.68
+      w_IGM_rest_Arr = np.linspace( w_Lya-20.0 , w_Lya+20.0 , 1000 )
+      T_IGM_Arr = np.ones( len( w_IGM_rest_Arr ) )
 
-          T_IGM_Arr[ w_IGM_rest_Arr < w_Lya ] = 0
+      T_IGM_Arr[ w_IGM_rest_Arr < w_Lya ] = 0
 ```
 
 Now let's generate the observed Lyman-alpha line profile:
 
 ```python
-          w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , info = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t , PIX_t , LyaRT_Grid, Geometry ,  T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_rest_Arr , RETURN_ALL=True )
+      w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , info = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t , PIX_t , LyaRT_Grid, Geometry ,  T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_rest_Arr , RETURN_ALL=True )
 ```
 
 
@@ -146,77 +146,77 @@ Now let's generate the observed Lyman-alpha line profile:
 We can obtain the intrinsic line profile with ideal conditions as...
 
 ```python
-          w_INT_Arr = info[ 'w_obs' ] # wavelength array of the intrinsic line
-          f_INT_Arr = info[ 'Intrinsic' ] # flux array of the intrinsic line
+      w_INT_Arr = info[ 'w_obs' ] # wavelength array of the intrinsic line
+      f_INT_Arr = info[ 'Intrinsic' ] # flux array of the intrinsic line
 ```
 
 The true IGM escape fraction is...
 
 ```python
-          print( info['f_IGM_4.0'] )
-          0.8827655503368276
+      print( info['f_IGM_4.0'] )
+      0.8827655503368276
 ```
 
 
 Now that we have our mock line profile, we can fit it. In this example we are going to use `MODE='IGM-z'`. There are three possible modes: `MODE='IGM+z'` , `MODE='IGM-z'` and `MODE='NoIGM'` . Each of these `MODE` use a differente machine learning model with a different training set. `MODE='IGM+z'` is trained so that the IGM transmission curves in the training set match the real IGM evolution with redshift. `MODE='IGM-z'` uses an IGM that is constant with redshift, and therefore it is more unbiased to redshift dependence than `MODE='IGM+z'`. Note that `MODE='IGM+z'` should be baised towards reallity. Then, `MODE='NoIGM'` was trained wihtout the IGM absorption, only the ISM part.
 
 ```python
-          N_ITER = 10000 # Number of times to pertube the line profile
+      N_ITER = 10000 # Number of times to pertube the line profile
 
-          RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER )
+      RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER )
 ```
 
 The function `Fit_Observed_line_with_IGM` is used to fit 1 line and it loads the NN and PCA models every time that it is called. This is not a problem if only a handful of lines are fitted at the same time. However, if the user wants to fit many lin    es, it could be better to load the NN and PCA models outside the function and pass it as an agument. This is done as...
 
 ```python
-          DIC_loaded_models , my_PCA_model = Lya.Pipieline_Zelda_2_Load_Models( 'IGM-z' )
+      DIC_loaded_models , my_PCA_model = Lya.Pipieline_Zelda_2_Load_Models( 'IGM-z' )
 
-          RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER , DIC_loaded_models=DIC_loaded_models , my_PCA_model=my_PCA_model )
+      RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER , DIC_loaded_models=DIC_loaded_models , my_PCA_model=my_PCA_model )
 ```
 
 `RESULTS` is a python dictionaty that stores all the information of the fit. The percentile 50 is stored as `x_Q50`, the percentile 16 as `x_Q16`, etc, where `x` is a fitted varible, like redshift, etc. Therefore, the fitted outflow values are
 
 ```python
-          z_sol     = RESULTS[    'z_Q50' ] # redshift
-          log_V_sol = RESULTS[ 'logV_Q50' ] # logarith of expansion velocity.
-          log_N_sol = RESULTS[ 'logN_Q50' ] # logarith of neutral hydrogen column density.
-          log_t_sol = RESULTS[ 'logt_Q50' ] # logarith of dust optical depth.
-          log_E_sol = RESULTS[ 'logE_Q50' ] # logarith of intrinsic equivalent width.
-          log_W_sol = RESULTS[ 'logW_Q50' ] # logarith of intrinsic width.
-          f_ig1_sol = RESULTS[  'f1A_Q50' ] # IGM Lya escape fraction 1A arround Lya.
-          f_ig2_sol = RESULTS[  'f2A_Q50' ] # IGM Lya escape fraction 2A arround Lya.
-          f_ig4_sol = RESULTS[  'f4A_Q50' ] # IGM Lya escape fraction 4A arround Lya.
+      z_sol     = RESULTS[    'z_Q50' ] # redshift
+      log_V_sol = RESULTS[ 'logV_Q50' ] # logarith of expansion velocity.
+      log_N_sol = RESULTS[ 'logN_Q50' ] # logarith of neutral hydrogen column density.
+      log_t_sol = RESULTS[ 'logt_Q50' ] # logarith of dust optical depth.
+      log_E_sol = RESULTS[ 'logE_Q50' ] # logarith of intrinsic equivalent width.
+      log_W_sol = RESULTS[ 'logW_Q50' ] # logarith of intrinsic width.
+      f_ig1_sol = RESULTS[  'f1A_Q50' ] # IGM Lya escape fraction 1A arround Lya.
+      f_ig2_sol = RESULTS[  'f2A_Q50' ] # IGM Lya escape fraction 2A arround Lya.
+      f_ig4_sol = RESULTS[  'f4A_Q50' ] # IGM Lya escape fraction 4A arround Lya.
 ```
 
 Then, the measured IGM Lya escape fraction 4 amstrongs arround Lya is
 
 ```python
-          print( RESULTS['f4A_Q50'] , '+-' , RESULTS['f4A_Q84']-RESULTS['f4A_Q16'] )
-          0.8047662675380707 +- [0.06671568]
+      print( RESULTS['f4A_Q50'] , '+-' , RESULTS['f4A_Q84']-RESULTS['f4A_Q16'] )
+      0.8047662675380707 +- [0.06671568]
 ```
 
 We can compute the solution line profile as...
 
 ```python
-          w_SOL_OBSERVED_Arr , f_SOL_OBSERVED_Arr , s_SOL_OBSERVED_Arr , sol_info = Lya.Generate_a_real_line( z_sol , 10**log_V_sol , log_N_sol, 10**log_t_sol, F_t, log_E_sol, 10**log_W_sol , 1000. , FWHM_t , PIX_t , LyaRT_Grid, Geometry , RETURN_AL    L=True )
+      w_SOL_OBS_Arr , f_SOL_OBS_Arr , s_SOL_OBS_Arr , sol_info = Lya.Generate_a_real_line( z_sol , 10**log_V_sol , log_N_sol, 10**log_t_sol, F_t, log_E_sol, 10**log_W_sol , 1000. , FWHM_t , PIX_t , LyaRT_Grid, Geometry , RETURN_AL    L=True )
 ```
 
 And we can plot it to compare with the actual intrinsic line profile:
 
 ```python
-          f_SOL_OBSERVED_Arr = f_SOL_OBSERVED_Arr * 1. / np.amax(f_SOL_OBSERVED_Arr) # rescaling to be comparable
+      f_SOL_OBS_Arr = f_SOL_OBS_Arr * 1. / np.amax(f_SOL_OBS_Arr) # rescaling to be comparable
 
-          w_SOL_OBSERVED_pix_Arr  , f_SOL_OBSERVED_pix_Arr  = Lya.plot_a_rebinned_line( w_SOL_OBSERVED_Arr , f_SOL_OBSERVED_Arr , PIX_t )
+      w_SOL_OBS_pix_Arr  , f_SOL_OBS_pix_Arr  = Lya.plot_a_rebinned_line( w_SOL_OBS_Arr , f_SOL_OBS_Arr , PIX_t )
 
-          plt.plot( w_IGM_rest_Arr*(1+z_t) , T_IGM_Arr , label='IGM tranmission' )
-          plt.plot( w_INT_Arr , f_INT_Arr , label='Intrinsic' )
-          plt.plot( w_IGM_pix_Arr , f_IGM_pix_Arr , label='IGM attenuated' )
-          plt.plot( w_SOL_OBSERVED_pix_Arr , f_SOL_OBSERVED_pix_Arr , label='Reconstruction' )
-          plt.legend(loc=0)
-          plt.xlabel('wavelength[A]' , size=15 )
-          plt.ylabel('Flux density [a.u.]' , size=15 )
-          plt.xlim( ( w_Lya - 5 ) * (1+z_t) , ( w_Lya + 5 ) * (1+z_t) )
-          plt.show()
+      plt.plot( w_IGM_rest_Arr*(1+z_t) , T_IGM_Arr , label='IGM tranmission' )
+      plt.plot( w_INT_Arr , f_INT_Arr , label='Intrinsic' )
+      plt.plot( w_IGM_pix_Arr , f_IGM_pix_Arr , label='IGM attenuated' )
+      plt.plot( w_SOL_OBS_pix_Arr , f_SOL_OBS_pix_Arr , label='Reconstruction' )
+      plt.legend(loc=0)
+      plt.xlabel('wavelength[A]' , size=15 )
+      plt.ylabel('Flux density [a.u.]' , size=15 )
+      plt.xlim( ( w_Lya - 5 ) * (1+z_t) , ( w_Lya + 5 ) * (1+z_t) )
+      plt.show()
 ```
 
 
