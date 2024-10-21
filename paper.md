@@ -68,11 +68,12 @@ Moreover, disentangeling the IGM from the ISM contribution will be key in future
 
 `zELDA`, installation is divided in two blocks. First you will need to install the python package.The pyhton package includes all the machine learning models need for fitting and modelling the Lyman-alpha line profiles. In order to install `zELDA`, it can be downloaded from GitHub:
 
-.. code:: python
 
+```
           $ git clone https://github.com/sidgl/zELDA_II/
           $ cd zELDA_II
           $ pip install .
+```
 
 Another option for the installation is using PyPI: 
 
