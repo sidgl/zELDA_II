@@ -139,7 +139,13 @@ In this tutorial we used a simple toy model for an IGM transmission curve. We se
 Now let's generate the observed Lyman-alpha line profile:
 
 ```python
-    w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , info = Lya.Generate_a_real_line( z_t , V_t, log_N_t, t_t, F_t, log_EW_t, W_t , PNR_t, FWHM_t , PIX_t , LyaRT_Grid, Geometry ,  T_IGM_Arr=T_IGM_Arr , w_IGM_Arr=w_IGM_rest_Arr , RETURN_ALL=True )
+    w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , info = Lya.Generate_a_real_line( z_t , 
+                                               V_t, log_N_t, t_t, F_t, log_EW_t, 
+                                               W_t , PNR_t, FWHM_t , PIX_t , 
+                                               LyaRT_Grid, Geometry ,  
+                                               T_IGM_Arr=T_IGM_Arr , 
+                                               w_IGM_Arr=w_IGM_rest_Arr , 
+                                               RETURN_ALL=True )
 ```
 
 
@@ -165,7 +171,8 @@ Now that we have our mock line profile, we can fit it. In this example we are go
 ```python
     N_ITER = 10000 # Number of times to pertube the line profile
 
-    RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , s_IGM_Arr , PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER )
+    RESULTS = Lya.Fit_Observed_line_with_IGM( w_IGM_Arr , f_IGM_Arr , 
+              s_IGM_Arr , PIX_t , FWHM_t , MODE='IGM-z' , N_ITER=N_ITER )
 ```
 
 The function `Fit_Observed_line_with_IGM` is used to fit 1 line and it loads the NN and PCA models every time that it is called. This is not a problem if only a handful of lines are fitted at the same time. However, if the user wants to fit many lin    es, it could be better to load the NN and PCA models outside the function and pass it as an agument. This is done as...
