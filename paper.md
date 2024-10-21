@@ -95,6 +95,7 @@ In this tutorial we show how fit Lyman-alpha line profiles using deep learning w
 
 .. code:: python
 
+```python
           import Lya_zelda_II as Lya
           import numpy as np
 
@@ -103,6 +104,7 @@ In this tutorial we show how fit Lyman-alpha line profiles using deep learning w
 
           Geometry = 'Thin_Shell_Cont'
           LyaRT_Grid = Lya.load_Grid_Line( Geometry )
+```
 
 where `/This/Folder/Contains/The/Grids/` is the location of your computer where the LyaRT data grids are stored. The redshift and shell model parameters must be set, as well as the quality of the desired mock line profile:
 
