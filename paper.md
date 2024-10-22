@@ -45,7 +45,7 @@ Regarding the unobscured Lyα line profiles, `zELDA` includes an MCMC algorithm 
 and two artificial neural network models trained in mock spectrum. 
 Regarding the IGM attenuated Lyα line profiles, `zELDA` includes four artificial neural network models trained with the `zELDA` 'shell-model' grid and the IGM transmission curves from the TNG100 simulation [@Byrohl2019; @Byrohl2020] .
 
-Tutorials on installation and usage can be found at https://zelda-ii.readthedocs.io/index.html. 
+Tutorials on installation and usage can be found at https://zelda-ii.readthedocs.io . 
 
 # Statement of need
 
@@ -82,25 +82,25 @@ The modelling of the Lyman-alpha line is made through lineal interpolation in gr
 
 - **Interestellar medium escape fraction** : `zELDA` provides the ISM escape fraction for three outflow geometries. These are a biconical wind, a spherical wind and a thin shell model. These models are presented in [@GurungLopez2019b].  
 
-- **Ideal Lyman-alpha line profiles** : `zELDA` provides the spectrum emerging from the three outflow geometries explained above. Aditionally, for the thin shell model, ideal spectrum is also provided for different intrinsic spectrum, as shown in [@gurunglopez2022]. An example of an ideal line profile is swhon in Fig.2. in orange. 
+- **Ideal Lyman-alpha line profiles** : `zELDA` provides the spectrum emerging from the three outflow geometries explained above. Aditionally, for the thin shell model, ideal spectrum is also provided for different intrinsic spectrum, as shown in [@gurunglopez2022]. An example of an ideal line profile is swhon in Fig.2. in red. 
 
-- **Mock Lyman-alpha line profiles** : `zELDA` provides realistic Lyman-alpha line profiles mimicking the aspects of observations. In particular, the ideal Lyman-alpha line profiles are downgrading by lower their resolution, adding pixelitation and noise,  as shown in [@gurunglopez2022]. The green line in Fig.2. shows the mock line profile of the ideal line profile (orange) after being convolved with an arbitrary intergalactic medium  tranmission curve (blue).
+- **Mock Lyman-alpha line profiles** : `zELDA` provides realistic Lyman-alpha line profiles mimicking the aspects of observations. In particular, the ideal Lyman-alpha line profiles are downgrading by lower their resolution, adding pixelitation and noise,  as shown in [@gurunglopez2022]. The blue line in Fig.2. shows the mock line profile of the ideal line profile (red) after being convolved with an arbitrary intergalactic medium  tranmission curve (yellow).
 
 ## Fitting observed Lyman-alpha line profiles
 
 The fitting of observed Lyman-alpha line profiles is perform in two different flavors. 
 
-- **Lyman-alpha line profileis wihtout IGM attenuation** : In @gurunglopez2022 we presented two methodologies for fitting Lyman-alpha line profiles clean from the IGM. `zELDA` includes an MCMC pipeline based in the python package `EMCEE` [@Foreman-Mackey] that minimizes the $\xi^2$. The sencond methodology relies in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA`. 
+- **Lyman-alpha line profileis wihtout IGM attenuation** : In @gurunglopez2022 we presented two methodologies for fitting Lyman-alpha line profiles clean from the IGM. `zELDA` includes a MCMC pipeline based in the python package `EMCEE` [@Foreman-Mackey]. The sencond methodology relies in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA`. 
 
-- **Lyman-alpha line profileis attenuated by the IGM** : The Lyman-alhpa line profile reconstruction is perform trhough in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA` convolved with the IGM tranmission curved from the TNG100 simulation [@Byrohl2019; @Byrohl2020]. The Lyman-alpha line profile reconstruction also provides the IGM escape fraction. An example of reconstruction is shown in red in Fig.2, using as input the mock line profile (green). The reconstructed line profile matches well the true line profile (orange).
+- **Lyman-alpha line profileis attenuated by the IGM** : The Lyman-alhpa line profile reconstruction is perform trhough in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA` convolved with the IGM tranmission curved from the TNG100 simulation [@Byrohl2019; @Byrohl2020]. The Lyman-alpha line profile reconstruction also provides the IGM escape fraction. An example of reconstruction is shown in green in Fig.2, using as input the mock line profile (blue). The reconstructed line profile matches well the true line profile (red).
 
-![Example of a Lyman-alpha line profile reconstruction. The IGM transmission curve is shown in blue. The intrinsic line profile in shown in orange. The Observed line profile after the IGM attenuation is shown in green. The reconstructed line profile is shown in red.](docs/figs_and_codes/fig_tutorial_fit_IGM_2.png)
+![Example of a Lyman-alpha line profile reconstruction. The IGM transmission curve is shown in blue. The intrinsic line profile in shown in orange. The observed line profile after the IGM attenuation is shown in green. The reconstructed line profile is shown in red.](docs/figs_and_codes/fig_joss.png)
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+SGL acknowledge the financial support from the MICIU with funding
+from the European Union NextGenerationEU and Generalitat Valenciana in the call Programa de 
+Planes Complementarios de I+D+i (PRTR 2022) Project (VAL-JPAS), reference ASFAE/2022/025.
 
 # References
 
-bibliography:
