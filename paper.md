@@ -85,6 +85,12 @@ Once the python pakage is installed, it is necessary to download the grid of Lym
 
 Then, extract the Grids.zip content in the folder in which the grids will be saved and loaded from.
 
+# Features and functionalities
+
+![Estructure of functionalities of `zELDA`](docs/figs_and_codes/estructura.png)
+
+
+
 # How to reconstruct IGM attenuated Lyman-alpha line profiles 
 
 In this tutorial we show how fit Lyman-alpha line profiles using deep learning with `zELDA`. The first step is to load the  `zELDA` grids by running
