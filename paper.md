@@ -90,11 +90,11 @@ The modelling of the Lyman-alpha line is made through lineal interpolation in gr
 
 The fitting of observed Lyman-alpha line profiles is perform in two different flavors. 
 
-- **Lyman-alpha line profileis wihtout IGM attenuation** : In @gurunglopez2022 we presented two methodologies for fitting Lyman-alpha line profiles clean from the IGM. `zELDA` includes a MCMC pipeline based in the python package `EMCEE` [@Foreman-Mackey]. The sencond methodology relies in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA`. 
+- **Lyman-alpha line profiles wihtout IGM attenuation** : In @gurunglopez2022 we presented two methodologies for fitting Lyman-alpha line profiles clean from the IGM. `zELDA` includes a MCMC pipeline based in the python package `EMCEE` [@Foreman-Mackey]. The sencond methodology relies in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA`. 
 
-- **Lyman-alpha line profileis attenuated by the IGM** : The Lyman-alhpa line profile reconstruction is perform trhough in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA` convolved with the IGM tranmission curved from the TNG100 simulation [@Byrohl2019; @Byrohl2020]. The Lyman-alpha line profile reconstruction also provides the IGM escape fraction. An example of reconstruction is shown in green in Fig.2, using as input the mock line profile (blue). The reconstructed line profile matches well the true line profile (red).
+- **Lyman-alpha line profiles attenuated by the IGM** : The Lyman-alhpa line profile reconstruction is perform trhough in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA` convolved with the IGM tranmission curved from the TNG100 simulation [@Byrohl2019; @Byrohl2020]. The Lyman-alpha line profile reconstruction also provides the IGM escape fraction. An example of reconstruction is shown in green in Fig.2, using as input the mock line profile (blue). The reconstructed line profile matches well the true line profile (red).
 
-![Example of a Lyman-alpha line profile reconstruction. The IGM transmission curve is shown in blue. The intrinsic line profile in shown in orange. The observed line profile after the IGM attenuation is shown in green. The reconstructed line profile is shown in red.](docs/figs_and_codes/fig_joss.png)
+![Example of a Lyman-alpha line profile reconstruction. The IGM transmission curve is shown in yellow. The intrinsic line profile in shown in red. The observed line profile after the IGM attenuation is shown in blue. The reconstructed line profile is shown in green.](docs/figs_and_codes/fig_joss.png)
 
 # Acknowledgements
 
