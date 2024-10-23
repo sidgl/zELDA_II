@@ -21,6 +21,8 @@ affiliations:
    index: 2
  - name: Universität Heidelberg, Institut für Theoretische Astrophysik, ZAH, Albert-Ueberle-Str. 2, 69120 Heidelberg, Germany
    index: 3
+ - name: Max Planck Institute for Astrophysics, Karl-Schwarzschild-Str. 1, 85748 Garching, Germany
+   index: 4
 date: 31 October 2024
 bibliography: paper.bib
 
@@ -32,16 +34,16 @@ bibliography: paper.bib
 
 # Summary
 
-We present `zELDA` (redshift Estimator for Line profiles of Distant Lyman Alpha emitters), an open source code to model and fit Lyman-alpha (Lyα) line profiles. 
-The main motivation is to provide the community with an easy to use and fast tool to analyze Lyα line profiles uniformly to improve the understanding of Lyα emitting galaxies. 
-In first place, concerning the Lyα line modeling, `zELDA` is based on line profiles of the commonly used 'shell-model' pre-computed with the full Monte Carlo radiative transfer code LyaRT.
+We present `zELDA` (redshift Estimator for Line profiles of Distant Lyman Alpha emitters), an open source python package to model and fit Lyman-alpha (Lyα) line profiles. 
+The main motivation is to provide the community with a fast and easy to use tool to analyze Lyα line profiles uniformly to improve the understanding of Lyα emitting galaxies. 
+In first place, concerning the Lyα line modeling, `zELDA` is based on line profiles of the commonly used 'shell-model' pre-computed with the full Monte Carlo radiative transfer code LyaRT [@orsi12].
 The 'shell-model' represents the contribution of the interstellar medium (ISM) and circumgalactic medium (CGM) to the Lyα line profile.
-Thus, `zELDA` provides a regular grid of 'shell-model' spectrum ranging expansion velocity from -1000 km/s to 1000 km/s, neutral hydrogen column density from $10^{17.0}cm^{-2}$ to $10^{21.5}cm^{-2}$, dust optical depth  from $10^{-4}$ to 1, intrinsic equivalent width from 0.1 to 1000 Ángstrom and intrinsic line width from 0.01 to 6.0 angstroms.This gives a total of  3,132,000 grid nodes. 
+Thus, `zELDA` provides a regular grid of 'shell-model' spectrum ranging expansion velocity from -1000 km/s to 1000 km/s, neutral hydrogen column density from $10^{17.0}cm^{-2}$ to $10^{21.5}cm^{-2}$, dust optical depth  from $10^{-4}$ to 1, intrinsic equivalent width from 0.1 to 1000 Angstrom and intrinsic line width from 0.01 to 6.0 Angstroms.This gives a total of  3,132,000 grid nodes. 
 The Lyα line profiles in an arbitrary position inside the grid is computed via lineal interpolation. 
 `zELDA` also includes the algorithms to transform the ideal Lyα line profiles into realistic profiles mocking observations. 
 In second place, the fitting of observed line profiles is handled with several methodologies. 
 `zELDA` includes the fitting of Lyα line profiles obscured and unobscured by the intergalactic medium (IGM). 
-Regarding the unobscured Lyα line profiles, `zELDA` includes an MCMC algorithm powered by the python package `EMCEE` [@Foreman-Mackey]
+Regarding the unobscured Lyα line profiles, `zELDA` includes a MCMC algorithm powered by the python package `EMCEE` [@Foreman-Mackey]
 and two artificial neural network models trained in mock spectrum. 
 Regarding the IGM attenuated Lyα line profiles, `zELDA` includes four artificial neural network models trained with the `zELDA` 'shell-model' grid and the IGM transmission curves from the TNG100 simulation [@Byrohl2019; @Byrohl2020] .
 
@@ -62,7 +64,7 @@ Moreover, disentangeling the IGM from the ISM contribution will be key in future
 
 # Installation
 
-`zELDA`, installation is divided in two blocks. First you will need to install the python package.The pyhton package includes all the machine learning models need for fitting and modelling the Lyman-alpha line profiles. In order to install `zELDA`, it can be downloaded from GitHub (`https://github.com/sidgl/zELDA_II/`) or installed using PyPI:
+`zELDA`, installation is divided in two blocks. First you will need to install the python package.The python package includes all the machine learning models needed for fitting and modelling the Lyman-alpha line profiles. In order to install `zELDA`, it can be downloaded from GitHub (`https://github.com/sidgl/zELDA_II/`) or installed using PyPI:
 
 ```
     $ python3 -m pip install Lya_zelda_II
@@ -74,7 +76,7 @@ Once the python pakage is installed, it is necessary to download the grid of Lym
 
 # Features and functionalities
 
-The features and functionalities of `zELDA` displayed in Fig.1. Basically `zELDA` has two main goals. First, modelling the Lyman-alpha emission and second, fitting observations of Lyman-alpha emitters. 
+The features and functionalities of `zELDA` are displayed in Fig.1. Basically `zELDA` has two main goals. First, modelling the Lyman-alpha emission and second, fitting observations of Lyman-alpha emitters. 
 
 ## Modelling Lyman-alpha
 
@@ -92,7 +94,7 @@ The fitting of observed Lyman-alpha line profiles is perform in two different fl
 
 - **Lyman-alpha line profiles wihtout IGM attenuation** : In @gurunglopez2022 we presented two methodologies for fitting Lyman-alpha line profiles clean from the IGM. `zELDA` includes a MCMC pipeline based in the python package `EMCEE` [@Foreman-Mackey]. The sencond methodology relies in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA`. 
 
-- **Lyman-alpha line profiles attenuated by the IGM** : The Lyman-alhpa line profile reconstruction is perform trhough in deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA` convolved with the IGM tranmission curved from the TNG100 simulation [@Byrohl2019; @Byrohl2020]. The Lyman-alpha line profile reconstruction also provides the IGM escape fraction. An example of reconstruction is shown in green in Fig.2, using as input the mock line profile (blue). The reconstructed line profile matches well the true line profile (red).
+- **Lyman-alpha line profiles attenuated by the IGM** : The Lyman-alhpa line profile reconstruction is perform through deep learning models powered by scikit-learn [@scikit-learn]. These models were trained using mock Lyman-alpha line profiles produced by `zELDA` convolved with the IGM tranmission curved from the TNG100 simulation [@Byrohl2019; @Byrohl2020]. The Lyman-alpha line profile reconstruction also provides the IGM escape fraction. An example of reconstruction is shown in green in Fig.2, using as input the mock line profile (blue). The reconstructed line profile matches well the true line profile (red).
 
 ![Example of a Lyman-alpha line profile reconstruction. The IGM transmission curve is shown in yellow. The intrinsic line profile in shown in red. The observed line profile after the IGM attenuation is shown in blue. The reconstructed line profile is shown in green.](docs/figs_and_codes/fig_joss.png)
 
@@ -103,4 +105,5 @@ from the European Union NextGenerationEU and Generalitat Valenciana in the call 
 Planes Complementarios de I+D+i (PRTR 2022) Project (VAL-JPAS), reference ASFAE/2022/025.
 
 # References
+
 
