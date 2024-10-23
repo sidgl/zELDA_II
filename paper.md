@@ -6,7 +6,7 @@ tags:
   - radiative transfer
   - galaxies
 authors:
-  - name: Siddhartha Gurung-Lopez    
+  - name: Siddhartha Gurung-López    
     orcid: 0000-0001-9333-8470
     affiliation: "1, 2" # (Multiple affiliations must be quoted)
     corresponding: true # (This is how to denote the corresponding author)
@@ -37,7 +37,7 @@ The main motivation is to provide the community with an easy to use and fast too
 In first place, concerning the Lyα line modeling, `zELDA` is based on line profiles of the commonly used 'shell-model' pre-computed with the full Monte Carlo radiative transfer code LyaRT.
 The 'shell-model' represents the contribution of the interstellar medium (ISM) and circumgalactic medium (CGM) to the Lyα line profile.
 Thus, `zELDA` provides a regular grid of 'shell-model' spectrum ranging expansion velocity from -1000 km/s to 1000 km/s, neutral hydrogen column density from $10^{17.0}cm^{-2}$ to $10^{21.5}cm^{-2}$, dust optical depth  from $10^{-4}$ to 1, intrinsic equivalent width from 0.1 to 1000 Ángstrom and intrinsic line width from 0.01 to 6.0 angstroms.This gives a total of  3,132,000 grid nodes. 
-The line Lyα line profiles in an arbitrary position inside the grid is computed via lineal interpolation. 
+The Lyα line profiles in an arbitrary position inside the grid is computed via lineal interpolation. 
 `zELDA` also includes the algorithms to transform the ideal Lyα line profiles into realistic profiles mocking observations. 
 In second place, the fitting of observed line profiles is handled with several methodologies. 
 `zELDA` includes the fitting of Lyα line profiles obscured and unobscured by the intergalactic medium (IGM). 
@@ -84,7 +84,7 @@ The modelling of the Lyman-alpha line is made through lineal interpolation in gr
 
 - **Ideal Lyman-alpha line profiles** : `zELDA` provides the spectrum emerging from the three outflow geometries explained above. Aditionally, for the thin shell model, ideal spectrum is also provided for different intrinsic spectrum, as shown in [@gurunglopez2022]. An example of an ideal line profile is swhon in Fig.2. in red. 
 
-- **Mock Lyman-alpha line profiles** : `zELDA` provides realistic Lyman-alpha line profiles mimicking the aspects of observations. In particular, the ideal Lyman-alpha line profiles are downgrading by lower their resolution, adding pixelitation and noise,  as shown in [@gurunglopez2022]. The blue line in Fig.2. shows the mock line profile of the ideal line profile (red) after being convolved with an arbitrary intergalactic medium  tranmission curve (yellow).
+- **Mock Lyman-alpha line profiles** : `zELDA` provides realistic Lyman-alpha line profiles mimicking the aspects of observed spectrum. In particular, the ideal Lyman-alpha line profiles are downgraded by lowering their resolution, adding pixelitation and noise,  as shown in [@gurunglopez2022]. The blue line in Fig.2. shows the mock line profile of the ideal line profile (red) after being convolved with an arbitrary intergalactic medium  tranmission curve (yellow).
 
 ## Fitting observed Lyman-alpha line profiles
 
