@@ -14,6 +14,10 @@ authors:
     affiliation: "3" # (Multiple affiliations must be quoted)
   - name: Max Gronke
     affiliation: "4"
+  - name: Pablo Arnalte-Mur
+    affiliation: "1, 2"
+  - name: Vicent J. Martínez
+    affiliation: "1, 2, 5"
 affiliations:
  - name: Observatori Astronomic de la Universitat de Valencia, Ed. Instituts d’Investigacio, Parc Cientific. C/ Catedratico Jose Beltran, n2, 46980 Paterna, Valencia, Spain
    index: 1
@@ -23,6 +27,8 @@ affiliations:
    index: 3
  - name: Max Planck Institute for Astrophysics, Karl-Schwarzschild-Str. 1, 85748 Garching, Germany
    index: 4
+ - name: Unidad Asociada Grupo de Astrofisica Extragalactica y Cosmologia, IFCA-CSIC/Universitat de Valencia, Valencia, Spain
+   index: 5
 date: 31 October 2024
 bibliography: paper.bib
 
@@ -100,9 +106,10 @@ The fitting of observed Lyman-alpha line profiles is perform in two different fl
 
 # Acknowledgements
 
-SGL acknowledge the financial support from the MICIU with funding
-from the European Union NextGenerationEU and Generalitat Valenciana in the call Programa de 
-Planes Complementarios de I+D+i (PRTR 2022) Project (VAL-JPAS), reference ASFAE/2022/025.
+The authors acknowledge the financial support from the MICIU with funding from the European Union NextGenerationEU and Generalitat Valenciana in the call Programa de Planes Complementarios de I+D+i (PRTR 2022) Project (VAL-JPAS), reference ASFAE/2022/025.
+This work is part of the research Project PID2023-149420NB-I00 funded by MICIU/AEI/10.13039/501100011033 and by ERDF/EU.
+This work is also supported by the project of excellence PROMETEO CIPROM/2023/21 of the Conselleria de Educación, Universidades y Empleo (Generalitat Valenciana).
+MG thanks the Max Planck Society for support through the Max Planck Research Group.
 
 # References
 
