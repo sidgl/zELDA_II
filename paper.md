@@ -40,12 +40,12 @@ bibliography: paper.bib
 
 # Summary
 
-We present `zELDA` (redshift Estimator for Line profiles of Distant Lyman Alpha emitters), an open source python package to model and fit Lyman-alpha (Lyα) line profiles. 
-The main motivation is to provide the community with a fast and easy to use tool to analyze Lyα line profiles uniformly to improve the understanding of Lyα emitting galaxies. 
-In first place, concerning the Lyα line modeling, `zELDA` is based on line profiles of the commonly used 'shell-model' pre-computed with the full Monte Carlo radiative transfer code LyaRT [@orsi12].
+We present `zELDA` (redshift Estimator for Line profiles of Distant Lyman Alpha emitters), an open-source Python package to model and fit Lyman-alpha (Lyα) line profiles. 
+The main motivation is to provide the community with a fast and easy-to-use tool to analyse Lyα line profiles uniformly to improve the understanding of Lyα emitting galaxies. 
+In first place, concerning the Lyα line modelling, `zELDA` is based on line profiles of the commonly used 'shell-model' pre-computed with the full Monte Carlo radiative transfer code LyaRT [@orsi12].
 The 'shell-model' represents the contribution of the interstellar medium (ISM) and circumgalactic medium (CGM) to the Lyα line profile.
 Thus, `zELDA` provides a regular grid of 'shell-model' spectrum ranging expansion velocity from -1000 km/s to 1000 km/s, neutral hydrogen column density from $10^{17.0}cm^{-2}$ to $10^{21.5}cm^{-2}$, dust optical depth  from $10^{-4}$ to 1, intrinsic equivalent width from 0.1 to 1000 Angstrom and intrinsic line width from 0.01 to 6.0 Angstroms.This gives a total of  3,132,000 grid nodes. 
-The Lyα line profiles in an arbitrary position inside the grid is computed via lineal interpolation. 
+The Lyα line profiles in an arbitrary position inside the grid are computed via linear interpolation. 
 `zELDA` also includes the algorithms to transform the ideal Lyα line profiles into realistic profiles mocking observations. 
 In second place, the fitting of observed line profiles is handled with several methodologies. 
 `zELDA` includes the fitting of Lyα line profiles obscured and unobscured by the intergalactic medium (IGM). 
@@ -57,16 +57,16 @@ Tutorials on installation and usage can be found at https://zelda-ii.readthedocs
 
 # Statement of need
 
-`zELDA` is an open source Python package to model and fit Lyα line profiles. 
+`zELDA` is an open-source Python package to model and fit Lyα line profiles. 
 On one hand, the  Lyα modeling through the 'shell-model' enables users to populate galaxy simulations with realistic  Lyα line profiles. 
 On the other hand, the fitting procedures provide a robust measurement of the shape of the line. 
-Moreover, `zELDA` is able to disentangle between the intergalactic and interestelar medium contribution to the  Lyα line profile. 
+Moreover, `zELDA` is able to disentangle between the intergalactic and interestellar medium contributions to the  Lyα line profile. 
 One of the advantages of `zELDA` is that it can be used seamlessly in different observational configurations, allowing a direct comparison between different surveys and projects. 
 
 `zELDA` is developed to have a user-friendly interface so that it can be used by researchers and students in astronomy courses. 
 `zELDA` has been used already in a number of scientific publications [@gurunglopez2022; @Guaita2022] , mainly to fit observational observations. 
 `zELDA` will allow researchers to extract the maximum information from their observed Lyα line profiles. 
-Moreover, disentangeling the IGM from the ISM contribution will be key in future surveys to understand the Lyα selection function.
+Moreover, disentangling the IGM from the ISM contribution will be key in future surveys to understand the Lyα selection function.
 
 # Installation
 
