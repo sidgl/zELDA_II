@@ -7,6 +7,7 @@ Authors
 *******
 
 | Siddhartha Gurung Lopez
+| Chris Byrohl
 | Max Gronke
 | Alvaro Orsi
 | Silvia Bonoli
