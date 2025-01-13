@@ -7,6 +7,7 @@ Authors
 *******
 
 | Siddhartha Gurung Lopez
+| Chris Byrohl
 | Max Gronke
 | Alvaro Orsi
 | Silvia Bonoli
@@ -15,14 +16,17 @@ Authors
 Publication links:
 ******************
 
-`zELDA` paper:
-
-
+| `zELDA II` (second version) paper:
+| ADS   : ...
+| arXiv : https://arxiv.org/abs/2501.04077
+|
+| `zELDA` is based on its previous version, `FLaREON` and `zELDA I`. Please, if you used `zELDA` in your project, cite also `FLaREON` and `zELDA I` :
+|
+| `zELDA I` (first version) paper:
 | ADS   : https://ui.adsabs.harvard.edu/abs/2021arXiv210901680G/abstract
 | arXiv : https://arxiv.org/abs/2109.01680
-|
-| `zELDA` is based on its previous version, `FLaREON`. Please, if you used `zELDA` in your project, cite also `FLaREON`:
 | 
+| `FLaREON` (zero version) paper:
 | ADS   : http://adsabs.harvard.edu/abs/2018arXiv181109630G
 | arXiv : https://arxiv.org/abs/1811.09630
 
